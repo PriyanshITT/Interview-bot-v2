@@ -11,7 +11,11 @@ import Start_General_Interview from "./pages/Start_General_Interview";
 import JobDescriptionBasedInterview from "./pages/JobDescriptionBasedInterview";
 import JobRoleBasedInterview from "./pages/JobRoleBasedInterview";
 import Training_session from "./pages/Training_session";
+<<<<<<< HEAD
 import ResumeBuilder from "./pages/ResumeBuilder";
+=======
+import Contact from "./pages/Contact";
+>>>>>>> 9762bc54ed278765fe7014316e9b0690bfbac474
 
 const App = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -35,6 +39,7 @@ const App = () => {
             <Route path="/training-session" element={<Training_session />}/>
             <Route path="/resume-builder" element={<ResumeBuilder />}/>
             
+            <Route path="/contact" element={<Contact />}/>
             
             
             
