@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { 
   FaHome, FaClipboardList, FaUserTie, FaChartBar, 
   FaChevronLeft, FaChevronRight, FaFileAlt, FaCommentDots, 
@@ -9,6 +9,7 @@ import "../styles/Sidebar.css";
 
 const Sidebar = ({ toggleSidebar }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation(); // Get current route path
 
   const handleToggle = () => {
     setCollapsed(!collapsed);
@@ -26,7 +27,7 @@ const Sidebar = ({ toggleSidebar }) => {
       </h2>
 
       <ul>
-        <li>
+        <li className={location.pathname === "/" ? "active-btn" : ""}>
           <Link to="/">
             <FaHome className="icon" />
             <span className={collapsed ? "hidden" : ""}>Home</span>
@@ -34,26 +35,26 @@ const Sidebar = ({ toggleSidebar }) => {
         </li>
 
         <p className={`section-title ${collapsed ? "hidden" : ""}`}>Interview</p>
-        <li>
+        <li className={location.pathname === "/interview-practice" ? "active-btn" : ""}>
           <Link to="/interview-practice">
             <FaFileAlt className="icon" />
             <span className={collapsed ? "hidden" : ""}>Interview Practice</span>
           </Link>
         </li>
-        <li>
+        <li className={location.pathname === "/ai-interview-test" ? "active-btn" : ""}>
           <Link to="/ai-interview-test">
             <FaClipboardList className="icon" />
             <span className={collapsed ? "hidden" : ""}>AI Interview Test</span>
           </Link>
         </li>
         
-        <li>
+        <li className={location.pathname === "/live-interview" ? "active-btn" : ""}>
           <Link to="/live-interview">
             <FaUserTie className="icon" />
             <span className={collapsed ? "hidden" : ""}>Live Interview</span>
           </Link>
         </li>
-        <li>
+        <li className={location.pathname === "/results" ? "active-btn" : ""}>
           <Link to="/results">
             <FaChartBar className="icon" />
             <span className={collapsed ? "hidden" : ""}>Results</span>
@@ -61,13 +62,13 @@ const Sidebar = ({ toggleSidebar }) => {
         </li>
 
         <p className={`section-title ${collapsed ? "hidden" : ""}`}>Tools</p>
-        <li>
+        <li className={location.pathname === "/resume-builder" ? "active-btn" : ""}>
           <Link to="/resume-builder">
             <FaFileAlt className="icon" />
             <span className={collapsed ? "hidden" : ""}>Resume Builder</span>
           </Link>
         </li>
-        <li>
+        <li className={location.pathname === "/ai-recruiter-chat" ? "active-btn" : ""}>
           <Link to="/ai-recruiter-chat">
             <FaCommentDots className="icon" />
             <span className={collapsed ? "hidden" : ""}>AI Recruiter Chat</span>
@@ -75,19 +76,19 @@ const Sidebar = ({ toggleSidebar }) => {
         </li>
 
         <p className={`section-title ${collapsed ? "hidden" : ""}`}>Support</p>
-        <li>
+        <li className={location.pathname === "/interview-support" ? "active-btn" : ""}>
           <Link to="/interview-support">
             <FaUsers className="icon" />
             <span className={collapsed ? "hidden" : ""}>Interview Support</span>
           </Link>
         </li>
-        <li>
+        <li className={location.pathname === "/training-session" ? "active-btn" : ""}>
           <Link to="/training-session">
             <FaClipboardList className="icon" />
             <span className={collapsed ? "hidden" : ""}>Training Session</span>
           </Link>
         </li>
-        <li>
+        <li className={location.pathname === "/contact" ? "active-btn" : ""}>
           <Link to="/contact">
             <FaPhone className="icon" />
             <span className={collapsed ? "hidden" : ""}>Contact Us</span>
@@ -96,7 +97,7 @@ const Sidebar = ({ toggleSidebar }) => {
       </ul>
 
       <div className={`footer-logo ${collapsed ? "hidden" : ""}`}>
-        <img src="/path-to-logo.png" alt="Intrain Tech Logo" />
+        <img src="https://i.postimg.cc/L8jpWB0v/ITT-logo.jpg" alt="Intrain Tech Logo" />
       </div>
     </div>
   );

@@ -108,3 +108,10 @@ li a:hover {
 .sidebar.collapsed + .content {
   margin-left: 70px;
 }
+
+.active-btn {
+  background-color: rgba(59, 130, 246, 0.2); /* Light blue with 20% opacity */
+  border-radius: 8px;
+  padding: 10px;
+  transition: all 0.3s ease;
+}
