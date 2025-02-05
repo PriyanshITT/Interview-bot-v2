@@ -15,32 +15,62 @@ export default function Contact() {
       <div className="flex gap-8">
         
         {/* Instagram */}
-        <a href="#" target="_blank" rel="noopener noreferrer" className="text-pink-500 hover:text-pink-700 transition duration-300">
+        <a 
+          href="https://www.instagram.com/intraintech_itt_1?igsh=c2tvdHNzYXBuNnpi" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-pink-500 hover:text-pink-700 transition duration-300"
+        >
           <Instagram size={50} />
         </a>
 
         {/* LinkedIn */}
-        <a href="#" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 transition duration-300">
+        <a 
+          href="https://www.linkedin.com/company/intraintech/" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-blue-600 hover:text-blue-800 transition duration-300"
+        >
           <Linkedin size={50} />
         </a>
 
         {/* WhatsApp */}
-        <a href="#" target="_blank" rel="noopener noreferrer" className="text-green-500 hover:text-green-700 transition duration-300">
+        <a 
+          href="https://wa.me/919937012448" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-green-500 hover:text-green-700 transition duration-300"
+        >
           <MessageCircle size={50} />
         </a>
 
         {/* Facebook */}
-        <a href="#" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:text-blue-900 transition duration-300">
+        <a 
+          href="https://www.facebook.com/share/1BiegdVgib/" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-blue-700 hover:text-blue-900 transition duration-300"
+        >
           <Facebook size={50} />
         </a>
 
         {/* YouTube */}
-        <a href="#" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-800 transition duration-300">
+        <a 
+          href="https://youtube.com/@intraintech?si=KugtGA4ljUMLomDN" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-red-600 hover:text-red-800 transition duration-300"
+        >
           <Youtube size={50} />
         </a>
 
         {/* Email */}
-        <a href="mailto:your-email@example.com" className="text-gray-700 hover:text-gray-900 transition duration-300">
+        <a 
+          href="https://mail.google.com/mail/?view=cm&fs=1&to=ai4interview.itt@gmail.com" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-gray-700 hover:text-gray-900 transition duration-300"
+        >
           <Mail size={50} />
         </a>
 
