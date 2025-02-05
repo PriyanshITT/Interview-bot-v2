@@ -15,6 +15,7 @@ import ResumeBuilder from "./pages/ResumeBuilder";
 import Contact from "./pages/Contact";
 import InterviewSupport from "./pages/Interview_support";
 
+import LiveInterview from "./pages/LiveInterview";
 const App = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
@@ -39,6 +40,7 @@ const App = () => {
             <Route path="/interview-support" element={<InterviewSupport />}/>
             
             <Route path="/contact" element={<Contact />}/>
+            <Route path="/live-interview" element={<LiveInterview />}/>
             
             
             
