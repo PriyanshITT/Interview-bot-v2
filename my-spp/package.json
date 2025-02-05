@@ -5,6 +5,7 @@
   "dependencies": {
     "cra-template": "1.2.0",
     "date-fns": "^4.1.0",
+    "devicon": "^2.16.0",
     "primeicons": "^7.0.0",
     "react": "^19.0.0",
     "react-calendar": "^5.1.0",
