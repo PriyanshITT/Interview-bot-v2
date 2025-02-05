@@ -84,6 +84,7 @@ export default function AiRecruiterChat() {
     ))}
   </div>
 
+  
   {/* Chat Section */}
   <div className="w-3/4 flex flex-col p-6 h-[87vh]">
     <div className="flex-1 bg-white shadow-lg rounded-lg p-4 overflow-y-auto max-h-[600px]">

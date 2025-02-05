@@ -1,6 +1,10 @@
 import requests
+import os
+from dotenv import load_dotenv
 
-API_KEY = "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"
+load_dotenv()
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 MODEL = "llama-3.3-70b-versatile"
 
 PRE_PROMPT = """
@@ -11,7 +15,7 @@ Keep responses short , professional and informative.
 
 def chat_with_groq(company, user_input):
     url = "https://api.groq.com/openai/v1/chat/completions"
-    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {API_KEY}"}
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {GROQ_API_KEY}"}
     
     system_prompt = PRE_PROMPT.format(company=company)
     
