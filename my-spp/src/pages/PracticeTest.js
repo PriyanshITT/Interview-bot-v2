@@ -1,5 +1,5 @@
 // PracticeTest.js
-
+//hmmm
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
@@ -121,7 +121,7 @@ const PracticeTest = () => {
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          {/* General Interview Card */}
+          {/* General Interview Card  */}
           <div
             className="p-8 h-64 bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl 
                       hover:shadow-2xl transition-transform duration-300 
