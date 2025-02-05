@@ -1,30 +1,28 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from textblob import TextBlob
-import os
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
+from mail import send_email  
 
 app = Flask(__name__)
+CORS(app)  # Allow all frontend requests
 
-# Enable CORS (Allow frontend requests)
-CORS(app, resources={r"/api/analyze": {"origins": os.getenv("FRONTEND_URL", "http://localhost:3000")}})
+@app.route("/send-email", methods=["POST"])
+def send_email_route():
+    try:
+        data = request.json
+        user_email = data.get("email", "")
+        contact_number = data.get("contact", "")
+        user_message = data.get("message", "")
 
-@app.route("/api/analyze", methods=["POST"])
-def analyze_sentiment():
-    """Analyze sentiment of the provided text."""
-    data = request.json
-    text = data.get("text", "")
+        # Call function from mail.py
+        success, response_msg = send_email(user_email, contact_number, user_message)
 
-    if not text.strip():
-        return jsonify({"error": "No text provided"}), 400
+        if success:
+            return jsonify({"message": response_msg})
+        else:
+            return jsonify({"error": response_msg}), 500
 
-    sentiment_score = TextBlob(text).sentiment.polarity
-    sentiment = "Positive" if sentiment_score > 0 else "Negative" if sentiment_score < 0 else "Neutral"
-
-    return jsonify({"sentiment": sentiment})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, port=int(os.getenv("FLASK_PORT", 5000)))
+    app.run(debug=True, port=5000)
