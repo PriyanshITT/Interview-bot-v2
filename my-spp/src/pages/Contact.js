@@ -11,7 +11,7 @@ export default function Contact() {
         Connect with us on social media or drop us an email.
       </p>
 
-      {/* Social Icons */}
+      {/* Social Icons with Animation */}
       <div className="flex gap-8">
         
         {/* Instagram */}
@@ -19,7 +19,7 @@ export default function Contact() {
           href="https://www.instagram.com/intraintech_itt_1?igsh=c2tvdHNzYXBuNnpi" 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="text-pink-500 hover:text-pink-700 transition duration-300"
+          className="text-pink-500 transition-transform duration-300 ease-out hover:scale-125"
         >
           <Instagram size={50} />
         </a>
@@ -29,7 +29,7 @@ export default function Contact() {
           href="https://www.linkedin.com/company/intraintech/" 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="text-blue-600 hover:text-blue-800 transition duration-300"
+          className="text-blue-600 transition-transform duration-300 ease-out hover:scale-125"
         >
           <Linkedin size={50} />
         </a>
@@ -39,7 +39,7 @@ export default function Contact() {
           href="https://wa.me/919937012448" 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="text-green-500 hover:text-green-700 transition duration-300"
+          className="text-green-500 transition-transform duration-300 ease-out hover:scale-125"
         >
           <MessageCircle size={50} />
         </a>
@@ -49,7 +49,7 @@ export default function Contact() {
           href="https://www.facebook.com/share/1BiegdVgib/" 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="text-blue-700 hover:text-blue-900 transition duration-300"
+          className="text-blue-700 transition-transform duration-300 ease-out hover:scale-125"
         >
           <Facebook size={50} />
         </a>
@@ -59,7 +59,7 @@ export default function Contact() {
           href="https://youtube.com/@intraintech?si=KugtGA4ljUMLomDN" 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="text-red-600 hover:text-red-800 transition duration-300"
+          className="text-red-600 transition-transform duration-300 ease-out hover:scale-125"
         >
           <Youtube size={50} />
         </a>
@@ -69,12 +69,16 @@ export default function Contact() {
           href="https://mail.google.com/mail/?view=cm&fs=1&to=ai4interview.itt@gmail.com" 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="text-gray-700 hover:text-gray-900 transition duration-300"
+          className="text-gray-700 transition-transform duration-300 ease-out hover:scale-125"
         >
           <Mail size={50} />
         </a>
 
-      </div>    
+      </div>
+      
+      {/* Footer */}
+      <p className="text-lg text-gray-600">© {new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+    
     </div>
   );
 }
