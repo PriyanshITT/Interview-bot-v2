@@ -74,11 +74,7 @@ export default function Contact() {
           <Mail size={50} />
         </a>
 
-      </div>
-      
-      {/* Footer */}
-      <p className="text-lg text-gray-600">© {new Date().getFullYear()} Your Company Name. All rights reserved.</p>
-    
+      </div>    
     </div>
   );
 }
