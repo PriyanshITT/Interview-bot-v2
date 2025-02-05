@@ -13,8 +13,11 @@ import Training_session from "./pages/Support/Training_session";
 import ResumeBuilder from "./pages/Tools/ResumeBuilder";
 import Contact from "./pages/Support/Contact";
 import InterviewSupport from "./pages/Support/Interview_support";
-
+import RecruiterChat from "./pages/Tools/RecruiterChat";
 import LiveInterview from "./pages/Interview/LiveInterview";
+import AiRecruiter_chat from "./pages/Tools/AiRecruiter_chat";
+
+
 const App = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
@@ -36,9 +39,11 @@ const App = () => {
             <Route path="/training-session" element={<Training_session />}/>
             <Route path="/resume-builder" element={<ResumeBuilder />}/>
             <Route path="/interview-support" element={<InterviewSupport />}/>
-            
             <Route path="/contact" element={<Contact />}/>
             <Route path="/live-interview" element={<LiveInterview />}/>
+            <Route path="/recruiter-chat" element={<RecruiterChat />}/>
+            <Route path="/ai-recruiter" element={<AiRecruiter_chat />}/>
+            
             
             
             
