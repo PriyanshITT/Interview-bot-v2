@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function TrainingSession() {
   return (
-    <div className="bg-white text-black min-h-screen flex flex-col items-center justify-center p-8 space-y-10">
+    <div className="bg-white text-black min-h-[88vh] flex flex-col items-center justify-center p-8 space-y-10">
       
       {/* Header Text */}
       <h1 className="text-3xl md:text-4xl font-semibold text-center">

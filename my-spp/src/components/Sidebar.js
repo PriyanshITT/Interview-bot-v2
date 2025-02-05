@@ -94,9 +94,14 @@ const Sidebar = ({ toggleSidebar }) => {
         </li>
       </ul>
 
-      <div className={`footer-logo `}>
-        <img src="https://i.postimg.cc/7Y0zKjDR/ITT-logo.jpg" alt="Intrain Tech Logo" />
+      <div className="footer-logo">
+        <img 
+          src="https://i.postimg.cc/7Y0zKjDR/ITT-logo.jpg" 
+          alt="Intrain Tech Logo" 
+          className="opacity-30 w-32"
+        />
       </div>
+
     </div>
   );
 };

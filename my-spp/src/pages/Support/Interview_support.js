@@ -41,7 +41,7 @@ export default function InterviewSupport() {
 
   return (
 <div
-  className="flex items-center justify-center h-[90vh] p-6"
+  className="flex items-center justify-center h-[88vh] p-6"
   style={{
     backgroundImage:
       "url('https://t4.ftcdn.net/jpg/04/39/69/99/360_F_439699926_GkaQTcxPchsvvtdrZ98cFQh1a8HQICwP.jpg')",

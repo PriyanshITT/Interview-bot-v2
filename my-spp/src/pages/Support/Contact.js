@@ -3,7 +3,7 @@ import { Facebook, Instagram, Linkedin, Mail, Youtube, MessageCircle } from 'luc
 
 export default function Contact() {
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col items-center justify-center p-12 space-y-12">
+    <div className="bg-gray-50 min-h-[88vh] flex flex-col items-center justify-center p-12 space-y-12">
       
       {/* Header */}
       <h1 className="text-5xl font-bold text-gray-900">Get in Touch</h1>

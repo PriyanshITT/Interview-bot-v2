@@ -88,17 +88,22 @@ li a:hover {
 
 .footer-logo {
   position: absolute;
-  bottom: 20px; /* Keep it at the bottom */
+  padding-bottom: 1vh;
+  bottom: 0;
   left: 50%;
-  transform: translateX(-50%); /* Center horizontally */
-  width: auto;
-  text-align: center;
+  transform: translateX(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: -1; /* Sends the image to the back */
 }
 
 .footer-logo img {
-  width: 120px; /* Keep it properly visible */
-  transition: width 0.3s ease-in-out;
+  max-width: 110px; /* Adjust size */
+  opacity: 0.3; /* Makes it fade into the background */
+  pointer-events: none; /* Prevents it from blocking button clicks */
 }
+
 
 /* Adjust when sidebar is collapsed */
 .sidebar.collapsed .footer-logo img {

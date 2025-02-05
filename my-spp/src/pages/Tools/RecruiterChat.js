@@ -6,10 +6,13 @@ export default function ResumeBuilder() {
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen bg-cover bg-center p-8"
+      className="flex items-center justify-center h-[88vh] p-6"
       style={{
         backgroundImage:
           "url('https://t4.ftcdn.net/jpg/04/39/69/99/360_F_439699926_GkaQTcxPchsvvtdrZ98cFQh1a8HQICwP.jpg')",
+          backgroundRepeat: "no-repeat", // ✅ Prevents repeating
+          backgroundSize: "cover", // ✅ Stretches image to cover the whole div
+          backgroundPosition: "center", // ✅ Centers the image
       }}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
