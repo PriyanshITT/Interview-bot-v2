@@ -72,7 +72,7 @@ const StartGeneralInterview = () => {
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
 
   // Switch from avatar selection to chat
@@ -193,7 +193,7 @@ const StartGeneralInterview = () => {
       selectedAvatarIndex !== null ? avatars[selectedAvatarIndex] : null;
 
     return (
-      <div className="w-full flex flex-col md:flex-row min-h-[700px]">
+      <div className="w-full flex flex-col md:flex-row min-h-[700px] ">
         {/* Left panel */}
         <div className="md:w-1/3 flex flex-col items-center justify-center p-8 border-b md:border-b-0 md:border-r border-gray-200">
           <div className="rounded-full w-32 h-32 mb-4 overflow-hidden bg-gray-200 shadow-lg">
@@ -240,7 +240,7 @@ const StartGeneralInterview = () => {
           </div>
 
           {/* Messages list (fixed height, auto-scroll) */}
-          <div className="h-[600px] overflow-y-auto border p-3 rounded-lg mb-4 bg-white shadow-md">
+          <div className="h-[500px] overflow-y-auto border p-3 rounded-lg mb-4 bg-white shadow-md">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
