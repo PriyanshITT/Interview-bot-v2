@@ -3,18 +3,18 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
-import InterviewTest from "./pages/InterviewTest";
+import InterviewTest from "./pages/Interview/InterviewTest";
 import "./styles/App.css";
-import PracticeTest from "./pages/PracticeTest";
-import Start_General_Interview from "./pages/Start_General_Interview";
-import JobDescriptionBasedInterview from "./pages/JobDescriptionBasedInterview";
-import JobRoleBasedInterview from "./pages/JobRoleBasedInterview";
-import Training_session from "./pages/Training_session";
-import ResumeBuilder from "./pages/ResumeBuilder";
-import Contact from "./pages/Contact";
-import InterviewSupport from "./pages/Interview_support";
+import PracticeTest from "./pages/Interview/PracticeTest";
+import Start_General_Interview from "./pages/Interview/Start_General_Interview";
+import JobDescriptionBasedInterview from "./pages/Interview/JobDescriptionBasedInterview";
+import JobRoleBasedInterview from "./pages/Interview/JobRoleBasedInterview";
+import Training_session from "./pages/Support/Training_session";
+import ResumeBuilder from "./pages/Tools/ResumeBuilder";
+import Contact from "./pages/Support/Contact";
+import InterviewSupport from "./pages/Support/Interview_support";
 
-import LiveInterview from "./pages/LiveInterview";
+import LiveInterview from "./pages/Interview/LiveInterview";
 const App = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 

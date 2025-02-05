@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../styles/LiveInterview.css";
+import "../../styles/LiveInterview.css";
 import "primeicons/primeicons.css";
 
 const tutorsData = [

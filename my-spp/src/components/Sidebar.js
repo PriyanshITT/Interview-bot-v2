@@ -66,10 +66,10 @@ const Sidebar = ({ toggleSidebar }) => {
             <span className={collapsed ? "hidden" : ""}>Resume Builder</span>
           </Link>
         </li>
-        <li className={location.pathname === "/ai-recruiter-chat" ? "active-btn" : ""}>
-          <Link to="/ai-recruiter-chat">
+        <li className={location.pathname === "/recruiter-chat" ? "active-btn" : ""}>
+          <Link to="/recruiter-chat">
             <FaCommentDots className="icon" />
-            <span className={collapsed ? "hidden" : ""}>AI Recruiter Chat</span>
+            <span className={collapsed ? "hidden" : ""}>Recruiter Chat</span>
           </Link>
         </li>
 
