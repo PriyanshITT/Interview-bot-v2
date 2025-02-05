@@ -97,7 +97,7 @@ const Sidebar = ({ toggleSidebar }) => {
       </ul>
 
       <div className={`footer-logo ${collapsed ? "hidden" : ""}`}>
-        <img src="https://i.postimg.cc/L8jpWB0v/ITT-logo.jpg" alt="Intrain Tech Logo" />
+        <img src="https://i.postimg.cc/7Y0zKjDR/ITT-logo.jpg" alt="Intrain Tech Logo" />
       </div>
     </div>
   );
