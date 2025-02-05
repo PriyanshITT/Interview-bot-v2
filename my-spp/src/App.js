@@ -45,8 +45,7 @@ const App = () => {
             <Route path="/ai-recruiter" element={<AiRecruiter_chat />}/>
             
             
-            
-            
+                        
           </Routes>
         </div>
       </div>

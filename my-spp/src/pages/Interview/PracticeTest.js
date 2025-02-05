@@ -11,33 +11,14 @@ const PracticeTest = () => {
   const [showModal, setShowModal] = useState(false);
 
   // Form state
-  const [role, setRole] = useState("");
-  const [roleOther, setRoleOther] = useState("");
+  // Replaced role with experience
+  const [experience, setExperience] = useState("");
   const [skills, setSkills] = useState("");
   const [skillsOther, setSkillsOther] = useState("");
-  const [knowledgeDomain, setKnowledgeDomain] = useState("");
-  const [knowledgeDomainOther, setKnowledgeDomainOther] = useState("");
+  // Renamed knowledgeDomain to domain
+  const [domain, setDomain] = useState("");
+  const [domainOther, setDomainOther] = useState("");
   const [interviewType, setInterviewType] = useState("General");
-
-  // The role options to show in the dropdown
-  const roleOptions = [
-    "Data Scientist",
-    "Machine Learning Engineer",
-    "Artificial Intelligence Specialist",
-    "Software Engineer",
-    "Data Engineer",
-    "Deep Learning Engineer",
-    "Cloud Engineer",
-    "DevOps Engineer",
-    "NLP Engineer",
-    "Computer Vision Engineer",
-    "AI Researcher",
-    "Business Intelligence Analyst",
-    "Big Data Architect",
-    "Full-Stack Developer",
-    "Cybersecurity Analyst",
-    "Other",
-  ];
 
   // Sample skill suggestions (modify as needed)
   const skillSuggestions = [
@@ -55,8 +36,8 @@ const PracticeTest = () => {
     "Other",
   ];
 
-  // Knowledge Domain (Specialization) options (modify as needed)
-  const knowledgeDomainOptions = [
+  // Domain options (modified from Knowledge Domain options)
+  const domainOptions = [
     "General",
     "Computer Vision",
     "NLP",
@@ -74,19 +55,16 @@ const PracticeTest = () => {
 
   // Check if all required fields are filled
   const isFormValid = () => {
-    // If role = "Other", must have roleOther
-    const roleFilled = role && (role !== "Other" || (role === "Other" && roleOther));
-
+    // Experience must be non-empty
+    const experienceFilled = experience.trim() !== "";
     // If skills = "Other", must have skillsOther
-    const skillsFilled = skills && (skills !== "Other" || (skills === "Other" && skillsOther));
-
-    // If knowledgeDomain = "Other", must have knowledgeDomainOther
+    const skillsFilled =
+      skills && (skills !== "Other" || (skills === "Other" && skillsOther));
+    // If domain = "Other", must have domainOther
     const domainFilled =
-      knowledgeDomain &&
-      (knowledgeDomain !== "Other" ||
-        (knowledgeDomain === "Other" && knowledgeDomainOther));
+      domain && (domain !== "Other" || (domain === "Other" && domainOther));
 
-    return roleFilled && skillsFilled && domainFilled;
+    return experienceFilled && skillsFilled && domainFilled;
   };
 
   // On Launch, navigate to StartGeneralInterview with form data
@@ -95,10 +73,9 @@ const PracticeTest = () => {
     if (!isFormValid()) return;
 
     const formData = {
-      role: role === "Other" ? roleOther : role,
+      experience,
       skills: skills === "Other" ? skillsOther : skills,
-      knowledgeDomain:
-        knowledgeDomain === "Other" ? knowledgeDomainOther : knowledgeDomain,
+      knowledgeDomain: domain === "Other" ? domainOther : domain, 
       interviewType,
     };
 
@@ -200,32 +177,17 @@ const PracticeTest = () => {
               </button>
             </div>
 
-            {/* Role (Required) */}
-            <label className="block text-gray-700 mb-1 font-medium">Role</label>
-            <select
-              value={role}
-              onChange={(e) => {
-                setRole(e.target.value);
-                if (e.target.value !== "Other") setRoleOther("");
-              }}
+            {/* Experience (Required) */}
+            <label className="block text-gray-700 mb-1 font-medium">
+              Experience
+            </label>
+            <input
+              type="text"
+              value={experience}
+              onChange={(e) => setExperience(e.target.value)}
+              placeholder="Enter your experience in years"
               className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
-            >
-              <option value="">Select your Role (Required)</option>
-              {roleOptions.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
-            {role === "Other" && (
-              <input
-                type="text"
-                value={roleOther}
-                onChange={(e) => setRoleOther(e.target.value)}
-                placeholder="Please specify your role"
-                className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
-              />
-            )}
+            />
 
             {/* Skills (Required) */}
             <label className="block text-gray-700 mb-1 font-medium">
@@ -256,37 +218,36 @@ const PracticeTest = () => {
               />
             )}
 
-            {/* Knowledge Domain (Required) */}
+            {/* Domain (Required) */}
             <label className="block text-gray-700 mb-1 font-medium">
-              Knowledge Domain (Specialization)
+              Domain
             </label>
             <select
-              value={knowledgeDomain}
+              value={domain}
               onChange={(e) => {
-                setKnowledgeDomain(e.target.value);
-                if (e.target.value !== "Other")
-                  setKnowledgeDomainOther("");
+                setDomain(e.target.value);
+                if (e.target.value !== "Other") setDomainOther("");
               }}
               className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
             >
               <option value="">Select a domain (Required)</option>
-              {knowledgeDomainOptions.map((domain) => (
-                <option key={domain} value={domain}>
-                  {domain}
+              {domainOptions.map((dom) => (
+                <option key={dom} value={dom}>
+                  {dom}
                 </option>
               ))}
             </select>
-            {knowledgeDomain === "Other" && (
+            {domain === "Other" && (
               <input
                 type="text"
-                value={knowledgeDomainOther}
-                onChange={(e) => setKnowledgeDomainOther(e.target.value)}
+                value={domainOther}
+                onChange={(e) => setDomainOther(e.target.value)}
                 placeholder="Please specify your domain"
                 className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
               />
             )}
 
-            {/* Interview Type (Not necessarily required, but let's keep it) */}
+            {/* Interview Type */}
             <label className="block text-gray-700 mb-1 font-medium">
               Interview Type
             </label>
@@ -296,8 +257,7 @@ const PracticeTest = () => {
               className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
             >
               <option value="General">General</option>
-              <option value="Behavioral">Behavioral</option>
-              <option value="Technical">Technical</option>
+              
             </select>
 
             {/* Action buttons */}

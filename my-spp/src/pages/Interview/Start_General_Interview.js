@@ -5,11 +5,13 @@ const StartGeneralInterview = () => {
   // Grab the form data passed from PracticeTest
   const location = useLocation();
   const {
-    role = "",
     skills = "",
     knowledgeDomain = "",
     interviewType = "General",
+    experience = "", // added for backend (if available)
   } = location.state || {};
+
+  console.log({ skills, experience, interviewType, knowledgeDomain });
 
   // Page stage: "chooseAvatar" or "chat"
   const [stage, setStage] = useState("chooseAvatar");
@@ -19,6 +21,9 @@ const StartGeneralInterview = () => {
 
   // Toggle for code mode (expanded textarea)
   const [isCodeMode, setIsCodeMode] = useState(false);
+
+  // Session ID from backend for the interview conversation
+  const [sessionId, setSessionId] = useState(null);
 
   // Sample Avatars
   const avatars = [
@@ -55,14 +60,8 @@ const StartGeneralInterview = () => {
     },
   ];
 
-  // Chat messages: now starts with the bot only
-  const [messages, setMessages] = useState([
-    {
-      sender: "bot",
-      text: `Hey there! I see you're aiming for a "${role}" role, with "${skills}" skills, focusing on "${knowledgeDomain}". This is a "${interviewType}" interview. Are you ready to begin?`,
-      time: "Just now",
-    },
-  ]);
+  // Chat messages: now starts with the bot only (will be replaced on interview start)
+  const [messages, setMessages] = useState([]);
 
   // Tracks user’s typed chat input
   const [userInput, setUserInput] = useState("");
@@ -75,25 +74,133 @@ const StartGeneralInterview = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
 
-  // Switch from avatar selection to chat
+  // Switch from avatar selection to chat and initialize the interview session
   const handleStartInterview = () => {
     if (selectedAvatarIndex !== null) {
       setStage("chat");
     }
   };
 
-  // Send a new user message
-  const handleSendMessage = () => {
+  // When the chat stage starts, initialize the interview by calling the backend
+  useEffect(() => {
+    if (stage === "chat") {
+      // Create a form data object to send the initial details
+      const formData = new FormData();
+      formData.append("skills", skills);
+      formData.append("experience", experience);
+      formData.append("interview_type", interviewType);
+      formData.append("domain", knowledgeDomain);
+
+      fetch("http://localhost:5041/start_interview", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          if (result.error) {
+            console.error("Error:", result.error);
+            // Optionally, display error message to user
+            setMessages((prev) => [
+              ...prev,
+              {
+                sender: "bot",
+                text: result.error,
+                time: new Date().toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }),
+              },
+            ]);
+          } else {
+            // Save the session ID returned by your backend
+            setSessionId(result.session_id);
+            // Set the initial bot message with the first interview question
+            setMessages([
+              {
+                sender: "bot",
+                text: result.question,
+                time: new Date().toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }),
+              },
+            ]);
+          }
+        })
+        .catch((error) => {
+          console.error("Error starting interview:", error);
+          setMessages((prev) => [
+            ...prev,
+            {
+              sender: "bot",
+              text: "Failed to start the interview. Please try again later.",
+              time: new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+            },
+          ]);
+        });
+    }
+  }, [stage, skills, experience, interviewType, knowledgeDomain]);
+
+  // Send a new user message and call the backend for the next question
+  const handleSendMessage = async () => {
     if (!userInput.trim()) return;
-    const newMsg = {
+
+    const userMessage = {
       sender: "user",
       text: userInput,
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
-    setMessages((prev) => [...prev, newMsg]);
+
+    // Append the user's message immediately to the chat
+    setMessages((prev) => [...prev, userMessage]);
+
+    try {
+      const response = await fetch("http://localhost:5041/next_question", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          session_id: sessionId,
+          user_answer: userInput,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        console.error("Error from backend:", data.error);
+        setMessages((prev) => [
+          ...prev,
+          {
+            sender: "bot",
+            text: data.error,
+            time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          },
+        ]);
+      } else {
+        const botMessage = {
+          sender: "bot",
+          text: data.question,
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        };
+        setMessages((prev) => [...prev, botMessage]);
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: "Sorry, something went wrong.",
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        },
+      ]);
+    }
+
     setUserInput("");
   };
 
@@ -271,7 +378,6 @@ const StartGeneralInterview = () => {
               className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 text-gray-700 focus:outline-none"
               onClick={handleMicClick}
             >
-              {/* A slightly more complete mic icon from Heroicons */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-5 h-5"
@@ -311,7 +417,6 @@ const StartGeneralInterview = () => {
               title="Toggle code mode (expand the text area)"
               onClick={handleToggleCodeMode}
             >
-              {/* Simple code icon (Heroicons style) */}
               <svg
                 className="w-5 h-5"
                 fill="none"
