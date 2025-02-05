@@ -13,7 +13,7 @@
 }
 
 .sidebar.collapsed {
-  width: 70px;
+  width: 100px;
 }
 
 .toggle-btn {
@@ -27,12 +27,18 @@
 }
 
 .sidebar-title {
-  font-size: 18px;
+  font-size: 18px; /* Default size */
   font-weight: bold;
-  color: blue;
   text-align: center;
-  transition: opacity 0.3s ease-in-out;
+  padding: 10px;
 }
+
+.sidebar.collapsed .sidebar-title {
+  font-size: 22px; /* Make ITT larger */
+  font-weight: 700; /* Bold */
+  letter-spacing: 2px; /* Adds spacing */
+}
+
 
 .hidden {
   display: none;
@@ -82,14 +88,23 @@ li a:hover {
 
 .footer-logo {
   position: absolute;
-  bottom: 20px;
-  width: 100%;
+  bottom: 20px; /* Keep it at the bottom */
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
+  width: auto;
   text-align: center;
 }
 
 .footer-logo img {
-  width: 120px;
+  width: 120px; /* Keep it properly visible */
+  transition: width 0.3s ease-in-out;
 }
+
+/* Adjust when sidebar is collapsed */
+.sidebar.collapsed .footer-logo img {
+  width: 60px; /* Reduce size for better fit */
+}
+
 
 /* Content Adjustments */
 .main-layout {

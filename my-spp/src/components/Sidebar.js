@@ -22,9 +22,7 @@ const Sidebar = ({ toggleSidebar }) => {
         {collapsed ? <FaChevronRight /> : <FaChevronLeft />}
       </button>
 
-      <h2 className={`sidebar-title ${collapsed ? "hidden" : ""}`}>
-        IntrainTech’s <br /> Interview Buddy
-      </h2>
+      <h2 className="sidebar-title">{collapsed ? "ITT" : "IntrainTech’s Interview Buddy"}</h2>
 
       <ul>
         <li className={location.pathname === "/" ? "active-btn" : ""}>
@@ -34,7 +32,7 @@ const Sidebar = ({ toggleSidebar }) => {
           </Link>
         </li>
 
-        <p className={`section-title ${collapsed ? "hidden" : ""}`}>Interview</p>
+        <p className="section-title">Interview</p>
         <li className={location.pathname === "/interview-practice" ? "active-btn" : ""}>
           <Link to="/interview-practice">
             <FaFileAlt className="icon" />
@@ -61,7 +59,7 @@ const Sidebar = ({ toggleSidebar }) => {
           </Link>
         </li>
 
-        <p className={`section-title ${collapsed ? "hidden" : ""}`}>Tools</p>
+        <p className="section-title">Tools</p>
         <li className={location.pathname === "/resume-builder" ? "active-btn" : ""}>
           <Link to="/resume-builder">
             <FaFileAlt className="icon" />
@@ -75,7 +73,7 @@ const Sidebar = ({ toggleSidebar }) => {
           </Link>
         </li>
 
-        <p className={`section-title ${collapsed ? "hidden" : ""}`}>Support</p>
+        <p className="section-title">Support</p>
         <li className={location.pathname === "/interview-support" ? "active-btn" : ""}>
           <Link to="/interview-support">
             <FaUsers className="icon" />
@@ -96,7 +94,7 @@ const Sidebar = ({ toggleSidebar }) => {
         </li>
       </ul>
 
-      <div className={`footer-logo ${collapsed ? "hidden" : ""}`}>
+      <div className={`footer-logo `}>
         <img src="https://i.postimg.cc/7Y0zKjDR/ITT-logo.jpg" alt="Intrain Tech Logo" />
       </div>
     </div>
