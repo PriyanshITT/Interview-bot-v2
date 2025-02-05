@@ -1,0 +1,110 @@
+.sidebar {
+  width: 250px;
+  background: white;
+  color: black;
+  height: 100vh;
+  padding: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: width 0.3s ease-in-out;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 10px;
+}
+
+.sidebar-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: blue;
+  text-align: center;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.hidden {
+  display: none;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 10px 0;
+}
+
+li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+li a:hover {
+  color: blue;
+}
+
+.icon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.sidebar.collapsed .icon {
+  margin-right: 0;
+}
+
+.sidebar.collapsed li a {
+  justify-content: center;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: gray;
+  margin: 10px 0;
+}
+
+.footer-logo {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.footer-logo img {
+  width: 120px;
+}
+
+/* Content Adjustments */
+.main-layout {
+  display: flex;
+  transition: margin-left 0.3s ease-in-out;
+  margin-left: 30px;
+}
+
+.content {
+  flex-grow: 1;
+  margin-left: 250px; /* Adjust based on sidebar width */
+  transition: margin-left 0.3s ease-in-out;
+  padding: 20px;
+}
+
+.sidebar.collapsed + .content {
+  margin-left: 70px;
+}
