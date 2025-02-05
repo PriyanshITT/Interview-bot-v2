@@ -13,7 +13,7 @@ import JobRoleBasedInterview from "./pages/JobRoleBasedInterview";
 import Training_session from "./pages/Training_session";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import Contact from "./pages/Contact";
-
+import LiveInterview from "./pages/LiveInterview";
 const App = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
@@ -37,6 +37,7 @@ const App = () => {
             <Route path="/resume-builder" element={<ResumeBuilder />}/>
             
             <Route path="/contact" element={<Contact />}/>
+            <Route path="/live-interview" element={<LiveInterview />}/>
             
             
             
