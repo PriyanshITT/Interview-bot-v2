@@ -1,6 +1,13 @@
-import React, { useState } from "react";
-import "../../styles/LiveInterview.css";
-import "primeicons/primeicons.css";
+  import React, { useState } from "react";
+
+  import DatePicker from "react-datepicker";
+  import "react-datepicker/dist/react-datepicker.css";
+  import { ToastContainer, toast } from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
+  import "../../styles/LiveInterview.css";
+ 
+  import "primeicons/primeicons.css";
+
 
 const tutorsData = [
   {
@@ -93,12 +100,16 @@ const tutorsData = [
   },
 ];
 
+
 const LiveInterview = () => {
   const [tutors, setTutors] = useState(tutorsData);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("name");
   const [filterLanguage, setFilterLanguage] = useState("");
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTutor, setSelectedTutor] = useState(null);
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
@@ -129,6 +140,28 @@ const LiveInterview = () => {
       tutor.languages.includes(e.target.value)
     );
     setTutors(filteredTutors);
+  };
+
+  const handleScheduleClick = (tutor) => {
+    setSelectedTutor(tutor);
+    setShowCalendar(true);
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleSubmit = () => {
+    setShowCalendar(false);
+    toast.success("Interview scheduled successfully!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
   };
 
   return (
@@ -207,7 +240,10 @@ const LiveInterview = () => {
                   <button className="bg-blue-500 text-white px-7 py-1.5 rounded-md hover:bg-blue-600 transition">
                     Chat
                   </button>
-                  <button className="bg-green-500 text-white px-4 py-1.5 rounded-md hover:bg-green-600 transition">
+                  <button
+                    className="bg-green-500 text-white px-4 py-1.5 rounded-md hover:bg-green-600 transition"
+                    onClick={() => handleScheduleClick(tutor)}
+                  >
                     Schedule
                   </button>
                 </div>
@@ -215,9 +251,42 @@ const LiveInterview = () => {
             </div>
           ))}
         </div>
-        <p class="query-text">
+
+        {showCalendar && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">
+                Schedule Interview with {selectedTutor?.name}
+              </h2>
+             <div className="ml-12">
+             <DatePicker
+                selected={selectedDate}
+                onChange={handleDateChange}
+                inline
+              />
+             </div>
+              <div className="flex justify-end mt-4">
+                <button
+                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </button>
+                <button
+                  className="ml-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition"
+                  onClick={() => setShowCalendar(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <ToastContainer />
+        <p className="query-text">
           For any queries, go to the{" "}
-          <a href="/contact-us" class="contact-link">
+          <a href="/contact-us" className="contact-link">
             Contact Us
           </a>{" "}
           page.
