@@ -5,7 +5,7 @@
   import { ToastContainer, toast } from "react-toastify";
   import "react-toastify/dist/ReactToastify.css";
   import "../../styles/LiveInterview.css";
- 
+
   import "primeicons/primeicons.css";
  import data from '../../files/tutorsData.json'
 
@@ -15,7 +15,7 @@
 const LiveInterview = () => {
   const tutorsData =data;
   const [tutors, setTutors] = useState(tutorsData);
-  const [searchTerm, setSearchTerm] = useState("");
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("name");
   const [filterLanguage, setFilterLanguage] = useState("");
