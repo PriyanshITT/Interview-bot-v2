@@ -63,12 +63,13 @@ const StartGeneralInterview = () => {
 
   // Chat messages: now starts with the bot only (will be replaced on interview start)
   const [messages, setMessages] = useState([]);
-
+  
   // Tracks user’s typed chat input
   const [userInput, setUserInput] = useState("");
 
   // Ref to auto-scroll to bottom of the chat
   const messagesEndRef = useRef(null);
+  
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -144,6 +145,8 @@ const StartGeneralInterview = () => {
         });
     }
   }, [stage, skills, experience, interviewType, knowledgeDomain]);
+
+  
 
   // Send a new user message and call the backend for the next question
   const handleSendMessage = async () => {
@@ -303,7 +306,7 @@ const StartGeneralInterview = () => {
     return (
       <div className="w-full flex flex-col md:flex-row min-h-[700px] ">
         {/* Left panel */}
-        <div className="md:w-1/3 flex flex-col items-center justify-center p-8 border-b md:border-b-0 md:border-r border-gray-200">
+        <div className="md:w-1/5 flex flex-col items-center justify-center p-8 border-b md:border-b-0 md:border-r border-gray-200">
           <div className="rounded-full w-32 h-32 mb-4 overflow-hidden bg-gray-200 shadow-lg">
             {chosenAvatar && (
               <img
@@ -330,9 +333,9 @@ const StartGeneralInterview = () => {
         </div>
 
         {/* Right panel (Chat) */}
-        <div className="md:w-2/3 flex flex-col p-6">
+        <div className="md:w-4/5 flex flex-col p-6">
           {/* Chat header */}
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-3">
             {chosenAvatar && (
               <div className="w-10 h-10 mr-2">
                 <img
@@ -348,42 +351,36 @@ const StartGeneralInterview = () => {
           </div>
 
           {/* Messages list (fixed height, auto-scroll) */}
-          <div className="h-[500px] overflow-y-auto border p-3 rounded-lg mb-4 bg-white shadow-md">
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`mb-3 flex flex-col ${
-                  msg.sender === "user" ? "items-end" : "items-start"
-                }`}
-              >
-                <div
-                  className={`px-4 py-2 rounded-lg max-w-xs text-sm ${
-                    msg.sender === "user"
-                      ? "bg-indigo-500 text-white"
-                      : "bg-gray-200 text-gray-800"
-                  } whitespace-pre-wrap`}
-                >
-                  {msg.sender === "bot" ? (
-                    <BotMessage text={msg.text} delay={300}
-                    onUpdate={() =>
-                      messagesEndRef.current?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "end",
-                      })
-                    }
-
-                    />
-                  ) : (
-                    msg.text
-                  )}
-                </div>
-                <span className="text-xs text-gray-400 mt-1">{msg.time}</span>
-              </div>
-            ))}
-            {/* Dummy div to scroll into view */}
-            <div ref={messagesEndRef} />
+      
+      <div className="h-[500px] overflow-y-auto border p-3 rounded-lg mb-4 bg-white shadow-md"
+      >
+        {messages.map((msg, idx) => (
+          <div
+            key={idx}
+            className={`mb-3 flex flex-col ${
+              msg.sender === "user" ? "items-end" : "items-start"
+            }`}
+          >
+            <div
+              className={`px-4 py-2 rounded-lg max-w-md text-sm ${
+                msg.sender === "user"
+                  ? "bg-indigo-500 text-white"
+                  : "bg-gray-200 text-gray-800"
+              } whitespace-pre-wrap`}
+            >
+              {msg.sender === "bot" ? (
+                <BotMessage text={msg.text} delay={50}/>
+              ) : (
+                msg.text
+                
+              )}
+            </div>
+            <span className="text-xs text-gray-400 mt-1">{msg.time}</span>
           </div>
-
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
+  
           {/* Chat input row */}
           <div className="flex items-center space-x-2">
             {/* Mic Button */}
