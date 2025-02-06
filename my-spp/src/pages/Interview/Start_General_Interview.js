@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import BotMessage from "../../components/BotMessage";
 
 const StartGeneralInterview = () => {
   // Grab the form data passed from PracticeTest
@@ -362,7 +363,19 @@ const StartGeneralInterview = () => {
                       : "bg-gray-200 text-gray-800"
                   } whitespace-pre-wrap`}
                 >
-                  {msg.text}
+                  {msg.sender === "bot" ? (
+                    <BotMessage text={msg.text} delay={300}
+                    onUpdate={() =>
+                      messagesEndRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "end",
+                      })
+                    }
+
+                    />
+                  ) : (
+                    msg.text
+                  )}
                 </div>
                 <span className="text-xs text-gray-400 mt-1">{msg.time}</span>
               </div>
