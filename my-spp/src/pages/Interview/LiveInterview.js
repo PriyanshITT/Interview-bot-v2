@@ -1,21 +1,16 @@
-  import React, { useState } from "react";
-
-  import DatePicker from "react-datepicker";
-  import "react-datepicker/dist/react-datepicker.css";
-  import { ToastContainer, toast } from "react-toastify";
-  import "react-toastify/dist/ReactToastify.css";
-  import "../../styles/LiveInterview.css";
-
-  import "primeicons/primeicons.css";
- import data from '../../files/tutorsData.json'
-
- 
-
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../../styles/LiveInterview.css";
+import "primeicons/primeicons.css";
+import data from "../../files/tutorsData.json";
 
 const LiveInterview = () => {
-  const tutorsData =data;
+  const tutorsData = data;
   const [tutors, setTutors] = useState(tutorsData);
-  
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("name");
   const [filterLanguage, setFilterLanguage] = useState("");
@@ -77,13 +72,28 @@ const LiveInterview = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300 overflow-hidden">
+    <motion.div
+      className="relative min-h-screen bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300 overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+    >
       <div className="flex flex-col items-center py-12">
-        <h1 className="text-4xl font-bold text-white mb-8">
+        <motion.h1
+          className="text-4xl font-bold text-white mb-8"
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           Live Interview Tutors
-        </h1>
+        </motion.h1>
 
-        <div className="flex flex-row justify-center gap-4 mb-16">
+        <motion.div
+          className="flex flex-row justify-center gap-4 mb-16"
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.7 }}
+        >
           <select
             className="border text-gray-500 rounded-md py-2 px-3"
             value={filterLanguage}
@@ -114,14 +124,17 @@ const LiveInterview = () => {
             value={searchQuery}
             onChange={handleSearch}
           />
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 w-[90%]">
           {tutors.map((tutor) => (
-            <div
+            <motion.div
               key={tutor.id}
               className="bg-white p-6 rounded-xl shadow-lg flex flex-row items-center space-x-6 hover:shadow-xl transition-shadow duration-300"
-            >
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: tutor.id * 0.1 }}
+            > 
               <div className="flex flex-col items-center">
                 <img
                   src={tutor.profilePic}
@@ -134,7 +147,7 @@ const LiveInterview = () => {
               </div>
 
               <div className="flex flex-col justify-between">
-                <h2 className="text-xl font-semibold">{tutor.name}</h2>
+                <h2 className="text-xl font-semibold mb-1">{tutor.name}</h2>
                 <p className="text-gray-600">
                   <strong>Languages:</strong> {tutor.languages.join(", ")}
                 </p>
@@ -149,50 +162,44 @@ const LiveInterview = () => {
                 </p>
 
                 <div className="flex gap-4 mt-6">
-                  <button className="bg-blue-500 text-white px-7 py-1.5 rounded-md hover:bg-blue-600 transition">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="bg-blue-500 text-white px-7 py-1.5 rounded-md hover:bg-blue-600 transition"
+                  >
                     Chat
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                     className="bg-green-500 text-white px-4 py-1.5 rounded-md hover:bg-green-600 transition"
                     onClick={() => handleScheduleClick(tutor)}
                   >
                     Schedule
-                  </button>
+                  </motion.button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {showCalendar && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
             <div className="bg-white p-6 rounded-lg shadow-lg">
               <h2 className="text-xl font-semibold mb-4">
                 Schedule Interview with {selectedTutor?.name}
               </h2>
-             <div className="ml-12">
-             <DatePicker
-                selected={selectedDate}
-                onChange={handleDateChange}
-                inline
-              />
-             </div>
-              <div className="flex justify-end mt-4">
-                <button
-                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </button>
-                <button
-                  className="ml-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition"
-                  onClick={() => setShowCalendar(false)}
-                >
-                  Cancel
-                </button>
-              </div>
+              <DatePicker selected={selectedDate} onChange={handleDateChange} inline />
+              <button className="bg-green-500 text-white px-4 py-2 rounded-md" onClick={handleSubmit}>
+                Submit
+              </button>
             </div>
-          </div>
+          </motion.div>
         )}
 
         <ToastContainer />
@@ -203,8 +210,14 @@ const LiveInterview = () => {
           </a>{" "}
           page.
         </p>
+
+        <div className="flex justify-center space-x-2 mt-6">
+          <span className="text-gray-700 px-3 py-1 bg-white rounded-md">1</span>
+          <span className="text-gray-700 px-3 py-1 bg-white rounded-md">2</span>
+          <span className="text-gray-700 px-3 py-1 bg-white rounded-md">3</span>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
