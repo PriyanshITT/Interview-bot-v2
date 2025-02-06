@@ -134,7 +134,7 @@ const LiveInterview = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: tutor.id * 0.1 }}
-            >
+            > 
               <div className="flex flex-col items-center">
                 <img
                   src={tutor.profilePic}
@@ -147,12 +147,18 @@ const LiveInterview = () => {
               </div>
 
               <div className="flex flex-col justify-between">
-                <h2 className="text-xl font-semibold">{tutor.name}</h2>
+                <h2 className="text-xl font-semibold mb-1">{tutor.name}</h2>
                 <p className="text-gray-600">
                   <strong>Languages:</strong> {tutor.languages.join(", ")}
                 </p>
                 <p className="text-gray-600">
                   <strong>Skills:</strong> {tutor.skills.join(", ")}
+                </p>
+                <p className="text-gray-600">
+                  <strong>Experience:</strong> {tutor.experience}
+                </p>
+                <p className="text-gray-600">
+                  <strong>Price:</strong> {tutor.price}
                 </p>
 
                 <div className="flex gap-4 mt-6">
