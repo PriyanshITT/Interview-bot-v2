@@ -75,7 +75,7 @@
 
 .chat-btn {
   margin-top: 15px;
-  background: #303f9f;
+  
   color: white;
   padding: 8px 20px;
   border: none;
@@ -85,9 +85,6 @@
   transition: background 0.3s;
 }
 
-.chat-btn:hover {
-  background: #536dfe;
-}
 .query-text {
   margin-top: 20px;
   font-size: 16px;
