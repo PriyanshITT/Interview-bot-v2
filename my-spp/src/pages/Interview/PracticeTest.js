@@ -11,13 +11,12 @@ const PracticeTest = () => {
   const [showModal, setShowModal] = useState(false);
 
   // Form state
-  // Replaced role with experience
   const [experience, setExperience] = useState("");
   const [skills, setSkills] = useState("");
   const [skillsOther, setSkillsOther] = useState("");
-  // Renamed knowledgeDomain to domain
   const [domain, setDomain] = useState("");
   const [domainOther, setDomainOther] = useState("");
+  // Default interviewType is "General"
   const [interviewType, setInterviewType] = useState("General");
 
   // Sample skill suggestions (modify as needed)
@@ -49,7 +48,7 @@ const PracticeTest = () => {
     "Other",
   ];
 
-  // Open/close the General Interview modal
+  // Open/close the modal
   const handleOpenModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
@@ -67,18 +66,19 @@ const PracticeTest = () => {
     return experienceFilled && skillsFilled && domainFilled;
   };
 
-  // On Launch, navigate to StartGeneralInterview with form data
+  // On Launch, navigate to the interview page with form data
   const handleLaunch = () => {
-    // Just ensure isFormValid() is true before launching
     if (!isFormValid()) return;
 
     const formData = {
       experience,
       skills: skills === "Other" ? skillsOther : skills,
-      knowledgeDomain: domain === "Other" ? domainOther : domain, 
+      knowledgeDomain: domain === "Other" ? domainOther : domain,
       interviewType,
     };
 
+    // You can choose to navigate to a different route based on interviewType if needed.
+    // For now, both types navigate to the same page:
     navigate("/start-general-interview", { state: formData });
   };
 
@@ -98,13 +98,15 @@ const PracticeTest = () => {
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          {/* General Interview Card  */}
+          {/* General Interview Card */}
           <div
-            className="p-8 h-64 bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl 
-                      hover:shadow-2xl transition-transform duration-300 
-                      transform hover:-translate-y-1 hover:scale-105 cursor-pointer
-                      flex flex-col items-center justify-center my-custom-card"
-            onClick={handleOpenModal}
+            className="h-64 p-8 bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl 
+            hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 cursor-pointer flex flex-col items-center justify-center"
+            onClick={() => {
+              // Pre-set interview type for the modal form
+              setInterviewType("General");
+              handleOpenModal();
+            }}
           >
             <img
               src="https://img.icons8.com/ios-filled/50/000000/laptop.png"
@@ -118,11 +120,13 @@ const PracticeTest = () => {
 
           {/* Coding Copilot Interview Card */}
           <div
-            className="p-8 h-64 bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl 
-                      hover:shadow-2xl transition-transform duration-300 
-                      transform hover:-translate-y-1 hover:scale-105 cursor-pointer
-                      flex flex-col items-center justify-center my-custom-card"
-            onClick={() => navigate("/coding-copilot-interview")}
+            className="h-64 p-8 bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl 
+            hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 cursor-pointer flex flex-col items-center justify-center"
+            onClick={() => {
+              // Pre-set interview type for the modal form to "Coding Copilot Interview"
+              setInterviewType("Coding Copilot Interview");
+              handleOpenModal();
+            }}
           >
             <img
               src="https://img.icons8.com/ios-filled/50/000000/code.png"
@@ -136,7 +140,7 @@ const PracticeTest = () => {
         </div>
       </div>
 
-      {/* Modal for General Interview */}
+      {/* Modal for Interview (same modal for both cards) */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           {/* Overlay */}
@@ -257,7 +261,9 @@ const PracticeTest = () => {
               className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
             >
               <option value="General">General</option>
-              
+              <option value="Coding Copilot Interview">
+                Coding Copilot Interview
+              </option>
             </select>
 
             {/* Action buttons */}
@@ -285,8 +291,7 @@ const PracticeTest = () => {
   );
 };
 
-/* Inline custom CSS (optional demonstration) - you can place these styles
-   in your index.css or a dedicated .css file if you prefer. */
+/* Inline custom CSS (optional demonstration) */
 const customStyles = `
 .my-custom-card {
   background: linear-gradient(135deg, #f8f8f8 20%, #ffe6fa 100%);
