@@ -116,7 +116,7 @@ const LiveInterview = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 w-[70%]">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 w-[90%]">
           {tutors.map((tutor) => (
             <div
               key={tutor.id}
