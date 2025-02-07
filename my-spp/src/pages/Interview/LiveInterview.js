@@ -126,15 +126,16 @@ const LiveInterview = () => {
           />
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 w-[90%]">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 w-[90%] ">
           {tutors.map((tutor) => (
             <motion.div
-              key={tutor.id}
-              className="bg-white p-6 rounded-xl shadow-lg flex flex-row items-center space-x-6 hover:shadow-xl transition-shadow duration-300"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: tutor.id * 0.1 }}
-            > 
+            key={tutor.id}
+            className="bg-white p-6 rounded-xl shadow-lg flex flex-row items-center space-x-6 transition-transform duration-300 ease-in-out hover:scale-125 hover:shadow-2xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: tutor.id * 0.1 }}
+          >
+          
               <div className="flex flex-col items-center">
                 <img
                   src={tutor.profilePic}
@@ -165,14 +166,14 @@ const LiveInterview = () => {
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="bg-blue-500 text-white px-7 py-1.5 rounded-md hover:bg-blue-600 transition"
+                    className="bg-blue-400 text-white px-7 py-1.5 rounded-md hover:bg-blue-500 transition duration-300 ease-in-out transform hover:scale-105"
                   >
                     Chat
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="bg-green-500 text-white px-4 py-1.5 rounded-md hover:bg-green-600 transition"
+                    className="bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300 text-white px-4 py-1.5 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
                     onClick={() => handleScheduleClick(tutor)}
                   >
                     Schedule
@@ -203,7 +204,7 @@ const LiveInterview = () => {
         )}
 
         <ToastContainer />
-        <p className="query-text">
+        <p className="query-text mt-9">
           For any queries, go to the{" "}
           <a href="/contact-us" className="contact-link">
             Contact Us
