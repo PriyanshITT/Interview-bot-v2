@@ -20,6 +20,7 @@ export default function AiRecruiterChat() {
   ]);
   const [input, setInput] = useState("");
 
+  
   const companies = [
     { name: "Apple", icon: <SiApple /> },
     { name: "Microsoft", icon: <FaMicrosoft /> }, // Fixed Microsoft icon
