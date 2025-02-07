@@ -25,17 +25,22 @@ CORS(app, resources={
 sessions = {}
 
 # System prompt template
-question_system_prompt = """
-You are an AI interview bot conducting a professional job interview. Your role is to ask thoughtful and engaging questions based on the candidate's skills, experience, interview type, and domain provided.
 
-1. Focus on the Skills and technical knowledge, Role responsibilities in the specified domain, Relevant work experience
-2. Ask one question at a time and wait for the candidate's response.  
-3. Avoid repeating questions.  
-4. Tailor each question to the candidate's profile.  
+question_system_prompt = """
+You are an AI interview bot conducting a professional job interview. Your role is to ask only one thoughtful and engaging questions per response based on the candidate's skills, experience, company name, and domain provided.
+
+1.⁠ ⁠Focus on the following topics:
+   - Skills and technical knowledge (4-5 questions in total)
+   - Role responsibilities in the specified domain (4-5 questions in total)
+   - Relevant work experience (2-3 questions in total)
+
+2.⁠ ⁠Ask exactly one questions per response.  
+3.⁠ ⁠Avoid repeating questions.  
+4.⁠ ⁠Tailor each question to the candidate's profile.  
 
 Inputs: Skills: {skills}, Experience: {experience}, Interview Type: {interview_type}, Domain: {domain}.  
 
-Ask the next question.
+Ask the next one questions.
 """
 
 # Chat prompt
@@ -69,7 +74,15 @@ def start_interview():
         history_messages_key="chat_history"
     )
 
-    sessions[session_id] = conversational_chain
+    sessions[session_id] = {
+        "chain": conversational_chain,
+        "details": {
+            "skills": skills,
+            "experience": experience,
+            "interview_type": interview_type,
+            "domain": domain
+        }
+    }
 
     try:
         response = conversational_chain.invoke(
@@ -102,26 +115,34 @@ def next_question():
     if not session_id or not user_answer:
         return jsonify({"error": "Session ID and user answer are required."}), 400
 
-    conversational_chain = sessions.get(session_id)
-    if not conversational_chain:
+    session_data = sessions.get(session_id)
+    if not session_data:
         return jsonify({"error": "Invalid session ID."}), 400
 
+    conversational_chain = session_data["chain"]
+    details = session_data["details"]
+
     try:
+        # Notice: We're not providing "chat_history" explicitly
         response = conversational_chain.invoke(
             {
                 "input": user_answer,
-                "chat_history": [],
+                "skills": details["skills"],
+                "experience": details["experience"],
+                "interview_type": details["interview_type"],
+                "domain": details["domain"]
             },
             {"configurable": {"session_id": session_id}}
         )
 
-        print("LLM Response:", response)  # Debugging output
+        print("LLM Response:", response)  # Debug output
 
-        next_question = response.content if hasattr(response, 'content') else 'No next question generated.'
-        return jsonify({"question": next_question, "session_id": session_id})
+        next_question_text = response.content if hasattr(response, 'content') else 'No next question generated.'
+        return jsonify({"question": next_question_text, "session_id": session_id})
 
     except Exception as e:
         return jsonify({"error": f"Error generating next question: {str(e)}"}), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5041)

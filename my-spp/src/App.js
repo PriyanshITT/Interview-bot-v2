@@ -16,6 +16,8 @@ import InterviewSupport from "./pages/Support/Interview_support";
 import RecruiterChat from "./pages/Tools/RecruiterChat";
 import LiveInterview from "./pages/Interview/LiveInterview";
 import AiRecruiter_chat from "./pages/Tools/AiRecruiter_chat";
+import TutorForm from "./form/TutorForm";
+import TutorList from "./form/TutorList";
 
 
 const App = () => {
@@ -43,7 +45,8 @@ const App = () => {
             <Route path="/live-interview" element={<LiveInterview />}/>
             <Route path="/recruiter-chat" element={<RecruiterChat />}/>
             <Route path="/ai-recruiter" element={<AiRecruiter_chat />}/>
-            
+            <Route path="/tutor-form" element={<TutorForm/>}/>
+            <Route path="/tutor-list" element={<TutorList/>}/>
             
                         
           </Routes>

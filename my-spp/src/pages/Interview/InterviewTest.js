@@ -5,27 +5,47 @@ import "../../index.css";
 const InterviewTest = () => {
   const navigate = useNavigate();
 
-  // Modal state
+  // Modal state and common form fields
   const [isOpen, setIsOpen] = useState(false);
   const [interviewType, setInterviewType] = useState(null);
   const [role, setRole] = useState("");
-  const [skills, setSkills] = useState("");
-  const [knowledgeDomain, setKnowledgeDomain] = useState("");
-  const [file, setFile] = useState(null); // Resume or JD file
+  const [customRole, setCustomRole] = useState(""); // for Role "Other"
+  const [file, setFile] = useState(null);
 
-  // Open modal with type (Job Role or JD Interview)
+  // Additional fields for job-role based interview
+  const [experience, setExperience] = useState("");
+  
+  // Company Name dropdown with "Other" option
+  const [companyName, setCompanyName] = useState("");
+  const [customCompanyName, setCustomCompanyName] = useState("");
+  
+  // Skills dropdown with "Other" option
+  const [skills, setSkills] = useState("");
+  const [customSkills, setCustomSkills] = useState("");
+  
+  // Knowledge Domain dropdown with "Other" option
+  const [knowledgeDomain, setKnowledgeDomain] = useState("");
+  const [customKnowledgeDomain, setCustomKnowledgeDomain] = useState("");
+
+  // Open modal with interview type
   const openModal = (type) => {
     setInterviewType(type);
     setIsOpen(true);
   };
 
-  // Close modal
+  // Close modal and reset fields
   const closeModal = () => {
     setIsOpen(false);
     setRole("");
-    setSkills("");
-    setKnowledgeDomain("");
+    setCustomRole("");
     setFile(null);
+    setExperience("");
+    setCompanyName("");
+    setCustomCompanyName("");
+    setSkills("");
+    setCustomSkills("");
+    setKnowledgeDomain("");
+    setCustomKnowledgeDomain("");
   };
 
   // Handle file upload
@@ -33,26 +53,78 @@ const InterviewTest = () => {
     setFile(event.target.files[0]);
   };
 
+  // Get final values from dropdowns (if "Other", then use custom value)
+  const getFinalValue = (value, customValue) => {
+    return value === "Other" ? customValue : value;
+  };
+
   // Handle form submission
   const handleLaunch = () => {
-    if (!role || !skills || !knowledgeDomain || !file) {
-      alert("Please fill all required fields and upload the necessary file.");
-      return;
+    if (interviewType === "job-role") {
+      if (
+        !experience ||
+        !role ||
+        (role === "Other" && !customRole) ||
+        !skills ||
+        (skills === "Other" && !customSkills) ||
+        !knowledgeDomain ||
+        (knowledgeDomain === "Other" && !customKnowledgeDomain) ||
+        !companyName ||
+        (companyName === "Other" && !customCompanyName) ||
+        !file
+      ) {
+        alert("Please fill all required fields and upload your resume.");
+        return;
+      }
+    } else {
+      if (!role || (role === "Other" && !customRole) || !file) {
+        alert("Please select a job role and upload the job description.");
+        return;
+      }
     }
 
-    // Determine where to navigate
-    const destination =
-      interviewType === "job-role" ? "/job-role-interview" : "/job-description-interview";
+    // Prepare final values
+    const finalRole = getFinalValue(role, customRole);
+    const finalSkills = getFinalValue(skills, customSkills);
+    const finalKnowledgeDomain = getFinalValue(knowledgeDomain, customKnowledgeDomain);
+    const finalCompanyName = getFinalValue(companyName, customCompanyName);
 
-    // Navigate with form data
-    navigate(destination, {
-      state: { role, skills, knowledgeDomain, fileName: file.name, interviewType },
-    });
+    // Example: Prepare data to send to the backend using FormData.
+    const formData = new FormData();
+    formData.append("role", finalRole);
+    formData.append("file", file);
+    formData.append("interviewType", interviewType);
+
+    if (interviewType === "job-role") {
+      formData.append("experience", experience);
+      formData.append("companyName", finalCompanyName);
+      formData.append("skills", finalSkills);
+      formData.append("knowledgeDomain", finalKnowledgeDomain);
+    }
+
+    // Here you would call your backend API endpoint using fetch or axios.
+    // For example:
+    // const endpoint = interviewType === "job-role" ? "/uploadResume" : "/uploadJD";
+    // fetch(endpoint, { method: "POST", body: formData })
+    //   .then(response => response.json())
+    //   .then(data => console.log("Upload successful", data))
+    //   .catch(error => console.error("Upload error:", error));
+
+    // Passing data to the next page (if required)
+    const data = { role: finalRole, fileName: file.name, interviewType };
+    if (interviewType === "job-role") {
+      data.experience = experience;
+      data.companyName = finalCompanyName;
+      data.skills = finalSkills;
+      data.knowledgeDomain = finalKnowledgeDomain;
+    }
+    const destination = interviewType === "job-role" ? "/job-role-interview" : "/job-description-interview";
+    navigate(destination, { state: data });
   };
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300 overflow-hidden">
-      {/* Decorative floating gradient blobs */}
+      {/* Decorative Floating Blobs */}
       <div className="absolute inset-0">
         <div className="absolute -top-32 -left-32 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
         <div className="absolute -bottom-32 right-0 w-96 h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
@@ -68,9 +140,7 @@ const InterviewTest = () => {
           {/* Job Role Based Interview Card */}
           <div
             className="h-64 p-8 bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl 
-                       hover:shadow-2xl transition-all duration-300
-                       transform hover:-translate-y-1 hover:scale-105 cursor-pointer
-                       flex flex-col items-center justify-center"
+                       hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 cursor-pointer flex flex-col items-center justify-center"
             onClick={() => openModal("job-role")}
           >
             <img
@@ -86,9 +156,7 @@ const InterviewTest = () => {
           {/* Job Description Based Interview Card */}
           <div
             className="h-64 p-8 bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl 
-                       hover:shadow-2xl transition-all duration-300
-                       transform hover:-translate-y-1 hover:scale-105 cursor-pointer
-                       flex flex-col items-center justify-center"
+                       hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 cursor-pointer flex flex-col items-center justify-center"
             onClick={() => openModal("job-description")}
           >
             <img
@@ -107,58 +175,167 @@ const InterviewTest = () => {
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
-            <h2 className="text-xl font-semibold mb-4">Start Your Next Interview</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              {interviewType === "job-role"
+                ? "Job Role Interview Details"
+                : "Job Description Interview Details"}
+            </h2>
 
-            {/* Role Selection */}
-            <label className="block text-gray-700">Role</label>
-            <select
-              className="w-full p-2 border rounded-md mb-3"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            >
-              <option value="">Select your Role (Required)</option>
-              <option value="Data Scientist">Data Scientist</option>
-              <option value="Software Engineer">Software Engineer</option>
-              <option value="AI Specialist">AI Specialist</option>
-              <option value="Other">Other</option>
-            </select>
+            {interviewType === "job-role" ? (
+              <>
+                {/* Experience */}
+                <label className="block text-gray-700">Experience</label>
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded-md mb-3"
+                  value={experience}
+                  onChange={(e) => setExperience(e.target.value)}
+                  placeholder="Enter your experience"
+                />
 
-            {/* Skills Selection */}
-            <label className="block text-gray-700">Select Key Skill(s)</label>
-            <select
-              className="w-full p-2 border rounded-md mb-3"
-              value={skills}
-              onChange={(e) => setSkills(e.target.value)}
-            >
-              <option value="">Select a skill (Required)</option>
-              <option value="Machine Learning">Machine Learning</option>
-              <option value="Data Engineering">Data Engineering</option>
-              <option value="Cloud Computing">Cloud Computing</option>
-            </select>
+                {/* Company Name Dropdown */}
+                <label className="block text-gray-700">Company Name</label>
+                <select
+                  className="w-full p-2 border rounded-md mb-3"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                >
+                  <option value="">Select Company Name (Required)</option>
+                  <option value="Google">Google</option>
+                  <option value="Microsoft">Microsoft</option>
+                  <option value="Amazon">Amazon</option>
+                  <option value="Other">Other</option>
+                </select>
+                {companyName === "Other" && (
+                  <input
+                    type="text"
+                    className="w-full p-2 border rounded-md mb-3"
+                    value={customCompanyName}
+                    onChange={(e) => setCustomCompanyName(e.target.value)}
+                    placeholder="Enter your company name"
+                  />
+                )}
 
-            {/* Knowledge Domain Selection */}
-            <label className="block text-gray-700">Knowledge Domain (Specialization)</label>
-            <select
-              className="w-full p-2 border rounded-md mb-3"
-              value={knowledgeDomain}
-              onChange={(e) => setKnowledgeDomain(e.target.value)}
-            >
-              <option value="">Select a domain (Required)</option>
-              <option value="Computer Vision">Computer Vision</option>
-              <option value="NLP">NLP</option>
-              <option value="Big Data">Big Data</option>
-            </select>
+                {/* Role Dropdown */}
+                <label className="block text-gray-700">Role</label>
+                <select
+                  className="w-full p-2 border rounded-md mb-3"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                >
+                  <option value="">Select your Role (Required)</option>
+                  <option value="Data Scientist">Data Scientist</option>
+                  <option value="Software Engineer">Software Engineer</option>
+                  <option value="AI Specialist">AI Specialist</option>
+                  <option value="Other">Other</option>
+                </select>
+                {role === "Other" && (
+                  <input
+                    type="text"
+                    className="w-full p-2 border rounded-md mb-3"
+                    value={customRole}
+                    onChange={(e) => setCustomRole(e.target.value)}
+                    placeholder="Enter your role"
+                  />
+                )}
 
-            {/* File Upload */}
-            <label className="block text-gray-700">
-              {interviewType === "job-role" ? "Upload Resume" : "Upload Job Description"}
-            </label>
-            <input type="file" className="w-full p-2 border rounded-md mb-3" onChange={handleFileUpload} />
+                {/* Skills Dropdown */}
+                <label className="block text-gray-700">Skills</label>
+                <select
+                  className="w-full p-2 border rounded-md mb-3"
+                  value={skills}
+                  onChange={(e) => setSkills(e.target.value)}
+                >
+                  <option value="">Select a skill (Required)</option>
+                  <option value="Machine Learning">Machine Learning</option>
+                  <option value="Data Engineering">Data Engineering</option>
+                  <option value="Cloud Computing">Cloud Computing</option>
+                  <option value="Other">Other</option>
+                </select>
+                {skills === "Other" && (
+                  <input
+                    type="text"
+                    className="w-full p-2 border rounded-md mb-3"
+                    value={customSkills}
+                    onChange={(e) => setCustomSkills(e.target.value)}
+                    placeholder="Enter your skill"
+                  />
+                )}
 
-            {/* Buttons */}
+                {/* Knowledge Domain Dropdown */}
+                <label className="block text-gray-700">Knowledge Domain</label>
+                <select
+                  className="w-full p-2 border rounded-md mb-3"
+                  value={knowledgeDomain}
+                  onChange={(e) => setKnowledgeDomain(e.target.value)}
+                >
+                  <option value="">Select a domain (Required)</option>
+                  <option value="Computer Vision">Computer Vision</option>
+                  <option value="NLP">NLP</option>
+                  <option value="Big Data">Big Data</option>
+                  <option value="Other">Other</option>
+                </select>
+                {knowledgeDomain === "Other" && (
+                  <input
+                    type="text"
+                    className="w-full p-2 border rounded-md mb-3"
+                    value={customKnowledgeDomain}
+                    onChange={(e) => setCustomKnowledgeDomain(e.target.value)}
+                    placeholder="Enter your domain"
+                  />
+                )}
+
+                {/* File Upload for Resume */}
+                <label className="block text-gray-700">Upload Resume</label>
+                <input
+                  type="file"
+                  className="w-full p-2 border rounded-md mb-3"
+                  onChange={handleFileUpload}
+                />
+              </>
+            ) : (
+              <>
+                {/* For Job Description Interview */}
+                <label className="block text-gray-700">Job Role</label>
+                <select
+                  className="w-full p-2 border rounded-md mb-3"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                >
+                  <option value="">Select Job Role (Required)</option>
+                  <option value="Data Scientist">Data Scientist</option>
+                  <option value="Software Engineer">Software Engineer</option>
+                  <option value="AI Specialist">AI Specialist</option>
+                  <option value="Other">Other</option>
+                </select>
+                {role === "Other" && (
+                  <input
+                    type="text"
+                    className="w-full p-2 border rounded-md mb-3"
+                    value={customRole}
+                    onChange={(e) => setCustomRole(e.target.value)}
+                    placeholder="Enter your role"
+                  />
+                )}
+
+                {/* File Upload for Job Description */}
+                <label className="block text-gray-700">Upload Job Description</label>
+                <input
+                  type="file"
+                  className="w-full p-2 border rounded-md mb-3"
+                  onChange={handleFileUpload}
+                />
+              </>
+            )}
+
             <div className="flex justify-end space-x-2 mt-4">
-              <button className="px-4 py-2 bg-gray-300 rounded-md" onClick={closeModal}>Cancel</button>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" onClick={handleLaunch}>
+              <button className="px-4 py-2 bg-gray-300 rounded-md" onClick={closeModal}>
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                onClick={handleLaunch}
+              >
                 Launch
               </button>
             </div>

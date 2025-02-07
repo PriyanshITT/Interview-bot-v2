@@ -59,7 +59,7 @@ const StartGeneralInterview = () => {
   const [messages, setMessages] = useState([
     {
       sender: "bot",
-      text: `Hey there! I see you're aiming for a "${role}" role, with "${skills}" skills, focusing on "${knowledgeDomain}". This is a "${interviewType}" interview. Are you ready to begin?`,
+      text: `Hey there! I see you're aiming for a "${role}" role, ". This is a "${interviewType}" interview.Lets start the Interview. Are you ready to begin?`,
       time: "Just now",
     },
   ]);
