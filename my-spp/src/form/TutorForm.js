@@ -110,7 +110,7 @@ const TutorForm = ({ tutorsData, setTutorsData }) => {
           </div> */}
 
           <div className="form-actions "> {/* Added margin top */}
-            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold  mt-1 py-2 px-4 rounded focus:outline-none focus:ring focus:border-blue-300"> {/* Styled the submit button */}
+            <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-bold  mt-1 py-2 px-4 rounded focus:outline-none focus:ring focus:border-blue-300"> {/* Styled the submit button */}
               Submit
             </button>
           </div>

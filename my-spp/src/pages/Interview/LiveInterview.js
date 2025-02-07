@@ -191,15 +191,18 @@ const LiveInterview = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h2 className="text-xl font-semibold mb-4">
-                Schedule Interview with {selectedTutor?.name}
-              </h2>
-              <DatePicker selected={selectedDate} onChange={handleDateChange} inline />
-              <button className="bg-green-500 text-white px-4 py-2 rounded-md" onClick={handleSubmit}>
-                Submit
-              </button>
-            </div>
+            <div className="bg-white p-6 rounded-lg shadow-lg w-[60%] max-w-sm mx-auto">
+  <h2 className="text-xl font-semibold mb-4 text-center">
+    Schedule Interview with {selectedTutor?.name}
+  </h2>
+  <div className="flex flex-col items-center">
+    <DatePicker className="px-4" selected={selectedDate} onChange={handleDateChange} inline />
+    <button className="bg-blue-400 hover:bg-blue-500 text-white px-6 py-2 mt-4 rounded-md self-center" onClick={handleSubmit}>
+      Submit
+    </button>
+  </div>
+</div>
+
           </motion.div>
         )}
 

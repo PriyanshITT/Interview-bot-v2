@@ -70,7 +70,7 @@
   .form-actions button {
     
     padding: 9px 25px;
-    background-color: #4CAF50;
+    
     color: white;
     border: none;
     border-radius: 6px;
@@ -80,7 +80,7 @@
   }
   
   .form-actions button:hover {
-    background-color: #45a049;
+  
     transform: scale(1.05);
   }
   
