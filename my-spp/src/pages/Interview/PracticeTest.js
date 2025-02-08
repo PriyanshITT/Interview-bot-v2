@@ -1,5 +1,4 @@
 // PracticeTest.js
-//hello helooooo
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../index.css";
@@ -54,15 +53,15 @@ const PracticeTest = () => {
 
   // Check if all required fields are filled
   const isFormValid = () => {
-    // Experience must be non-empty
     const experienceFilled = experience.trim() !== "";
-    // If skills = "Other", must have skillsOther
     const skillsFilled =
       skills && (skills !== "Other" || (skills === "Other" && skillsOther));
-    // If domain = "Other", must have domainOther
-    const domainFilled =
-      domain && (domain !== "Other" || (domain === "Other" && domainOther));
 
+    // Only validate domain if interviewType is "General"
+    let domainFilled = true;
+    if (interviewType === "General") {
+      domainFilled = domain && (domain !== "Other" || (domain === "Other" && domainOther));
+    }
     return experienceFilled && skillsFilled && domainFilled;
   };
 
@@ -73,12 +72,14 @@ const PracticeTest = () => {
     const formData = {
       experience,
       skills: skills === "Other" ? skillsOther : skills,
-      knowledgeDomain: domain === "Other" ? domainOther : domain,
+      // Only include domain for General interview
+      knowledgeDomain: interviewType === "General" 
+        ? (domain === "Other" ? domainOther : domain) 
+        : null,
       interviewType,
     };
 
     // You can choose to navigate to a different route based on interviewType if needed.
-    // For now, both types navigate to the same page:
     navigate("/start-general-interview", { state: formData });
   };
 
@@ -103,7 +104,6 @@ const PracticeTest = () => {
             className="h-64 p-8 bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl 
             hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 cursor-pointer flex flex-col items-center justify-center"
             onClick={() => {
-              // Pre-set interview type for the modal form
               setInterviewType("General");
               handleOpenModal();
             }}
@@ -118,29 +118,28 @@ const PracticeTest = () => {
             </h2>
           </div>
 
-          {/* Coding Copilot Interview Card */}
+          {/* Coding Interview Card */}
           <div
             className="h-64 p-8 bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl 
             hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 cursor-pointer flex flex-col items-center justify-center"
             onClick={() => {
-              // Pre-set interview type for the modal form to "Coding Copilot Interview"
-              setInterviewType("Coding Copilot Interview");
+              setInterviewType("Coding Interview");
               handleOpenModal();
             }}
           >
             <img
               src="https://img.icons8.com/ios-filled/50/000000/code.png"
-              alt="Coding Copilot Interview"
+              alt="Coding Interview"
               className="mb-4 w-14 h-14 drop-shadow-md transition-transform duration-300 hover:scale-110"
             />
             <h2 className="text-xl font-semibold text-gray-800">
-              Coding Copilot Interview
+              Coding Interview
             </h2>
           </div>
         </div>
       </div>
 
-      {/* Modal for Interview (same modal for both cards) */}
+      {/* Modal for Interview */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           {/* Overlay */}
@@ -222,49 +221,48 @@ const PracticeTest = () => {
               />
             )}
 
-            {/* Domain (Required) */}
-            <label className="block text-gray-700 mb-1 font-medium">
-              Domain
-            </label>
-            <select
-              value={domain}
-              onChange={(e) => {
-                setDomain(e.target.value);
-                if (e.target.value !== "Other") setDomainOther("");
-              }}
-              className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
-            >
-              <option value="">Select a domain (Required)</option>
-              {domainOptions.map((dom) => (
-                <option key={dom} value={dom}>
-                  {dom}
-                </option>
-              ))}
-            </select>
-            {domain === "Other" && (
-              <input
-                type="text"
-                value={domainOther}
-                onChange={(e) => setDomainOther(e.target.value)}
-                placeholder="Please specify your domain"
-                className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
-              />
+            {/* Domain (Required only for General Interview) */}
+            {interviewType === "General" && (
+              <>
+                <label className="block text-gray-700 mb-1 font-medium">
+                  Domain
+                </label>
+                <select
+                  value={domain}
+                  onChange={(e) => {
+                    setDomain(e.target.value);
+                    if (e.target.value !== "Other") setDomainOther("");
+                  }}
+                  className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
+                >
+                  <option value="">Select a domain (Required)</option>
+                  {domainOptions.map((dom) => (
+                    <option key={dom} value={dom}>
+                      {dom}
+                    </option>
+                  ))}
+                </select>
+                {domain === "Other" && (
+                  <input
+                    type="text"
+                    value={domainOther}
+                    onChange={(e) => setDomainOther(e.target.value)}
+                    placeholder="Please specify your domain"
+                    className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
+                  />
+                )}
+              </>
             )}
 
-            {/* Interview Type */}
-            <label className="block text-gray-700 mb-1 font-medium">
-              Interview Type
-            </label>
-            <select
-              value={interviewType}
-              onChange={(e) => setInterviewType(e.target.value)}
-              className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
-            >
-              <option value="General">General</option>
-              <option value="Coding Copilot Interview">
-                Coding Copilot Interview
-              </option>
-            </select>
+            {/* Display Interview Type (non-selectable) */}
+            <div className="mb-3">
+              <label className="block text-gray-700 mb-1 font-medium">
+                Interview Type
+              </label>
+              <div className="p-2 border border-gray-300 rounded bg-gray-100">
+                {interviewType}
+              </div>
+            </div>
 
             {/* Action buttons */}
             <div className="flex justify-end space-x-4">

@@ -32,32 +32,32 @@ const StartGeneralInterview = () => {
       id: 1,
       name: "Sophia",
       img: "https://randomuser.me/api/portraits/women/45.jpg",
-      description: "A friendly AI mentor specializing in Data & ML topics.",
+      description: " Beginner level",
     },
     {
       id: 2,
       name: "James",
       img: "https://randomuser.me/api/portraits/men/46.jpg",
-      description: "Your go-to for coding, architecture, and big data insights.",
+      description: " Moderate level",
     },
     {
       id: 3,
       name: "Ava",
       img: "https://randomuser.me/api/portraits/women/35.jpg",
-      description: "Expert in cloud engineering and AI pipelines.",
+      description: "Intermediate level",
     },
     {
       id: 4,
       name: "Ethan",
       img: "https://randomuser.me/api/portraits/men/36.jpg",
       description:
-        "Loves DevOps practices and advanced system design strategies.",
+        "Advanced level",
     },
     {
       id: 5,
       name: "Mia",
       img: "https://randomuser.me/api/portraits/women/47.jpg",
-      description: "Specializes in data visualization and analytics storytelling.",
+      description: "Expert level",
     },
   ];
 
@@ -93,7 +93,7 @@ const StartGeneralInterview = () => {
       formData.append("interview_type", interviewType);
       formData.append("domain", knowledgeDomain);
 
-      fetch("http://localhost:5041/start_interview", {
+      fetch("http://localhost:5000/start_interview", {
         method: "POST",
         body: formData,
       })
@@ -162,7 +162,7 @@ const StartGeneralInterview = () => {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const response = await fetch("http://localhost:5041/next_question", {
+      const response = await fetch("http://localhost:5000/next_question", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -253,7 +253,7 @@ const StartGeneralInterview = () => {
   const renderAvatarSelection = () => (
     <div className="w-full flex flex-col items-center justify-center p-4">
       <h1 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
-        Please choose your avatar
+        Please choose your avatar and level of complexity
       </h1>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 mb-8">
         {avatars.map((avatar, index) => (
@@ -369,7 +369,7 @@ const StartGeneralInterview = () => {
               } whitespace-pre-wrap`}
             >
               {msg.sender === "bot" ? (
-                <BotMessage text={msg.text} delay={50}/>
+                <BotMessage text={msg.text} delay={150}/>
               ) : (
                 msg.text
                 

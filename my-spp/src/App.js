@@ -18,6 +18,7 @@ import LiveInterview from "./pages/Interview/LiveInterview";
 import AiRecruiter_chat from "./pages/Tools/AiRecruiter_chat";
 import TutorForm from "./form/TutorForm";
 import TutorList from "./form/TutorList";
+import SpeechToText from "./components/Speechtotext";
 
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
     <Router>
       
       <Navbar />
+      
       <div className="main-layout">
         <Sidebar toggleSidebar={setIsSidebarCollapsed} />
         <div className={`content ${isSidebarCollapsed ? "collapsed" : ""}`}>
@@ -47,7 +49,9 @@ const App = () => {
             <Route path="/ai-recruiter" element={<AiRecruiter_chat />}/>
             <Route path="/tutor-form" element={<TutorForm/>}/>
             <Route path="/tutor-list" element={<TutorList/>}/>
+            <Route path="/mic-on" element={<SpeechToText/>}/>
             
+          
                         
           </Routes>
         </div>
