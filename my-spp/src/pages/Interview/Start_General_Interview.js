@@ -92,8 +92,9 @@ const StartGeneralInterview = () => {
       formData.append("experience", experience);
       formData.append("interview_type", interviewType);
       formData.append("domain", knowledgeDomain);
+      formData.append("level",avatars.description)
 
-      fetch("http://localhost:5000/start_interview", {
+      fetch("http://localhost:5041/start_interview", {
         method: "POST",
         body: formData,
       })
@@ -162,7 +163,7 @@ const StartGeneralInterview = () => {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const response = await fetch("http://localhost:5000/next_question", {
+      const response = await fetch("http://localhost:5041/next_question", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

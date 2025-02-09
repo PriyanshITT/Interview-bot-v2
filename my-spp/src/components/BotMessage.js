@@ -10,7 +10,7 @@ const BotMessage = ({ text, delay = 300 }) => {
     let index = 0;
     const interval = setInterval(() => {
       // Check to ensure we're not accessing an undefined word.
-      if (index < words.length-2) {
+      if (index < words.length-1) {
         setDisplayedText((prev) => (prev ? prev + " " : "") + words[index]);
         index++;
       } else {
