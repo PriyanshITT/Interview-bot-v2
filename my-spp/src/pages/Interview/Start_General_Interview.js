@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import BotMessage from "../../components/BotMessage";
+const flaskBaseUrl = process.env.REACT_APP_PRACTICE_URL;
 
 const StartGeneralInterview = () => {
   // Grab the form data passed from PracticeTest
@@ -94,7 +95,7 @@ const StartGeneralInterview = () => {
       formData.append("domain", knowledgeDomain);
       formData.append("level",avatars.description)
 
-      fetch("http://localhost:5041/start_interview", {
+      fetch(`${springbootBaseUrl}/start_interview`, {
         method: "POST",
         body: formData,
       })
@@ -163,7 +164,7 @@ const StartGeneralInterview = () => {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const response = await fetch("http://localhost:5041/next_question", {
+      const response = await fetch(`${springbootBaseUrl}/next_question`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
