@@ -10,7 +10,7 @@ const StartGeneralInterview = () => {
     knowledgeDomain = "",
     interviewType = "General",
   } = location.state || {};
-
+  
   // Page stage: "chooseAvatar" or "chat"
   const [stage, setStage] = useState("chooseAvatar");
 

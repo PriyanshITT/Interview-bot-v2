@@ -111,7 +111,7 @@ const InterviewTest = () => {
     //   .catch(error => console.error("Upload error:", error));
 
     // Passing data to the next page (if required)
-    const data = { role: finalRole, fileName: file.name, interviewType };
+    const data = { role: finalRole, fileName: file.name, interviewType,file:file};
     if (interviewType === "job-role") {
       data.experience = experience;
       data.companyName = finalCompanyName;

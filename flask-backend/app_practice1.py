@@ -35,9 +35,10 @@ def start_interview():
         return jsonify({"error": "All fields including level are required."}), 400
     
     system_prompt = f"""
-    You are an AI interview bot conducting a **level {level}** technical interview for a candidate skilled in **{skills}**, with **{experience}** experience in the **{domain}** domain. 
+    You are an AI interview bot conducting a **{level} level** technical interview for a candidate skilled in **{skills}**, with **{experience}** experience in the **{domain}** domain. 
     
     Your role is to ask **only one technical question** strictly related to the candidate's expertise.  
+    - Do not ask any coding related questions
     - Do not provide any introduction, explanation, or difficulty level.  
     - Ensure questions align with real-world applications and problem-solving within **{domain}**.  
     - Questions should be appropriate for a candidate with **{experience}** experience in **{skills}**.  

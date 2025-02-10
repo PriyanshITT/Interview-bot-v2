@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
+import chromadb.api
 import os
 import shutil
 import PyPDF2
@@ -36,7 +37,7 @@ CORS(app, resources={
 })
 # Configuration for uploads
 UPLOAD_FOLDER = 'uploads'
-CHROMA_DB_FOLDER = '/Users/priyanshsingh/Desktop/Interview-Bot/interview bot/flask-backend/chroma_db'
+CHROMA_DB_FOLDER = '/mnt/d/21AI_Interviewbot/main/Interview-bot-v2/flask-backend/chroma_db'
 ALLOWED_EXTENSIONS = {'pdf'}
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -50,13 +51,24 @@ def allowed_file(filename):
 def clear_chroma_db():
     try:
         if os.path.exists(CHROMA_DB_FOLDER):
-            shutil.rmtree(CHROMA_DB_FOLDER)
-        os.makedirs(CHROMA_DB_FOLDER, exist_ok=True)
-    except OSError as e:
+            for filename in os.listdir(CHROMA_DB_FOLDER):
+                file_path = os.path.join(CHROMA_DB_FOLDER, filename)
+                try:
+                    if os.path.isfile(file_path) or os.path.islink(file_path):
+                        os.unlink(file_path)  # Remove file or symbolic link
+                    elif os.path.isdir(file_path):
+                        shutil.rmtree(file_path)  # Remove subdirectory
+                except Exception as e:
+                    print(f"Failed to delete {file_path}. Reason: {e}")
+
+            os.rmdir(CHROMA_DB_FOLDER)  # Remove the main directory
+            os.makedirs(CHROMA_DB_FOLDER, exist_ok=True)
+    except Exception as e:
         print(f"Error clearing Chroma DB directory: {e}")
 
 @app.route('/upload_resume', methods=['POST'])
 def upload_resume():
+    chromadb.api.client.SharedSystemClient.clear_system_cache()
     if 'resume' not in request.files:
         return jsonify({"error": "No resume file provided."}), 400
 
@@ -77,6 +89,13 @@ def upload_resume():
     skills = request.form.get('skills')
     domain = request.form.get('domain')
     session_id = request.form.get('session_id', str(uuid.uuid4()))
+    print(job_role)
+    print(experience)
+    print(level)
+    print(company_name)
+    print(skills)
+    print(domain)
+    print(session_id)
 
     if not job_role or not experience:
         return jsonify({"error": "Job role and experience are required fields."}), 400
@@ -171,14 +190,21 @@ def upload_resume():
     try:
         response = conversational_rag_chain.invoke(
             {
-                "input": f"Job Role: {job_role}, Experience: {experience}, Level: {level}, Company: {company_name}, Skills: {skills}, Domain: {domain}. Start the interview.",
+                "input": "Start the interview.",
                 "context": resume_text,
-                "chat_history": []
+                "chat_history": [],
+                "job_role": job_role,
+                "experience": experience,
+                "level": level,
+                "company_name": company_name,
+                "skills": skills,
+                "domain": domain
             },
             {"configurable": {"session_id": session_id}}
         )
 
         first_question = response.get('answer', 'No question generated.')
+        print("first wuestion"+ first_question)
         return jsonify({"question": first_question, "session_id": session_id})
 
     except Exception as e:
@@ -238,7 +264,13 @@ def next_question():
             {
                 "input": evaluation_prompt,
                 "context": resume_text,
-                "chat_history": []
+                "chat_history": [],
+                "job_role": job_role,
+                "experience": experience,
+                "level": level,
+                "company_name": company_name,
+                "skills": skills,
+                "domain": domain
             },
             {"configurable": {"session_id": session_id}}
         )
@@ -249,30 +281,36 @@ def next_question():
         return jsonify({"error": f"Error evaluating answer: {str(e)}"}), 500
 
     # Store the evaluation result
-    api_url = f"https://interviewbot.intraintech.com/api/api/question-answers/add/userid/{user_id}/username/{username}"
-    payload = {
-        "question": question,
-        "answer": user_answer,
-        "marks": marks,
-        "timestamp": timestamp
-    }
+    # api_url = f"https://interviewbot.intraintech.com/api/api/question-answers/add/userid/{user_id}/username/{username}"
+    # payload = {
+    #     "question": question,
+    #     "answer": user_answer,
+    #     "marks": marks,
+    #     "timestamp": timestamp
+    # }
 
-    try:
-        response = requests.post(api_url, json=payload)
-        if response.status_code != 200:
-            return jsonify({"error": f"Failed to store data: {response.status_code} {response.text}"}), 500
-    except Exception as e:
-        return jsonify({"error": f"Error storing data: {str(e)}"}), 500
+    # try:
+    #     response = requests.post(api_url, json=payload)
+    #     if response.status_code != 200:
+    #         return jsonify({"error": f"Failed to store data: {response.status_code} {response.text}"}), 500
+    # except Exception as e:
+    #     return jsonify({"error": f"Error storing data: {str(e)}"}), 500
 
     # Generate the next question
     try:
         next_response = conversational_rag_chain.invoke(
             {
-                "input": f"Job Role: {job_role}, Experience: {experience}, Level: {level}, Company: {company_name}, Skills: {skills}, Domain: {domain}. {user_answer}",
+                "input": user_answer,
                 "context": resume_text,
-                "chat_history": []
+                "chat_history": [],
+                "job_role": job_role,
+                "experience": experience,
+                "level": level,
+                "company_name": company_name,
+                "skills": skills,
+                "domain": domain
             },
-            {"configurable": {"session_id": session_id}}  
+            {"configurable": {"session_id": session_id}}
         )
 
         next_question = next_response.get('answer', 'No next question generated.')
