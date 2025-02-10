@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import BotMessage from "../../components/BotMessage";
+const flaskTestUrl = process.env.REACT_APP_TEST_URL;
+
 
 const JobRoleBasedInterview = () => {
   // Grab the form data passed from InterviewTest
@@ -102,7 +104,7 @@ const JobRoleBasedInterview = () => {
       formData.append("resume",file);
       formData.append("level",avatars[ selectedAvatarIndex].description)
       
-      fetch("http://172.19.179.79:5040/upload_resume", {
+      fetch(`${flaskTestUrl}/upload_resume`, {
         method: "POST",
         body: formData,
       })
@@ -171,7 +173,7 @@ const JobRoleBasedInterview = () => {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const response = await fetch("http://172.19.179.79:5040/next_question", {
+      const response = await fetch(`${flaskTestUrl}/next_question`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
