@@ -95,7 +95,7 @@ const StartGeneralInterview = () => {
       formData.append("domain", knowledgeDomain);
       formData.append("level",avatars.description)
 
-      fetch(`${springbootBaseUrl}/start_interview`, {
+      fetch(`${flaskBaseUrl}/start_interview`, {
         method: "POST",
         body: formData,
       })
@@ -164,7 +164,7 @@ const StartGeneralInterview = () => {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const response = await fetch(`${springbootBaseUrl}/next_question`, {
+      const response = await fetch(`${flaskBaseUrl}/next_question`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
