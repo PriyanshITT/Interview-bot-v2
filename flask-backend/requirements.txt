@@ -1,4 +1,0 @@
-Flask
-Flask-Cors
-textblob
-python-dotenv
