@@ -1,0 +1,30 @@
+{
+    "wellness_report": "It seems like you're feeling a bit stuck in a rut right now.  Your answers indicate that you're not prioritizing your well-being in several key areas. \n\nHere's a starting point for making some positive changes:\n\nSleep: Aim for 7-8 hours of sleep each night.  Try establishing a relaxing bedtime routine and creating a sleep-conducive environment (dark, quiet, cool). \n\nExercise: You're already exercising 3 times a week, which is great!  Consider adding variety to your routine or increasing the intensity to challenge yourself further. \n\nStress Management:  A 3 out of 10 stress level suggests you're feeling some pressure. Explore mindfulness techniques like meditation or deep breathing exercises. Even 5-10 minutes daily can make a difference.\n\nDiet:  Focus on whole, unprocessed foods like fruits, vegetables, and lean proteins.  \n\nGeneral Wellness:\n\n Find Your Motivation:  Think about what truly matters to you and set small, achievable goals that align with your values.  \n Connect With Others:   Nurturing your relationships can boost your mood and sense of belonging. Schedule time for social activities. \n Gratitude Practice:  Take a few minutes each day to reflect on things you're grateful for. This can shift your perspective and improve your overall well-being.\n Address Restless Nights: If sleep continues to be an issue, consider consulting a healthcare professional.\n\nRemember, small changes can lead to big results over time. Be patient with yourself and celebrate your progress along the way.\n\n\nRecommended Packages:  Since you're looking to improve your well-being across multiple areas, the \"Focus Flow\" package might be beneficial. It often includes elements of stress management, mindfulness, and productivity techniques.",
+    "identified_problems": {
+      "stress_management": 10,
+      "low_therapy": 20,
+      "balanced_weight": 35,
+      "restless_night": 70,
+      "lack_of_motivation": 45,
+      "gut_health": 30,
+      "anxiety": 55,
+      "burnout": 61
+    },
+    "recommended_packages": [
+      "No More Insomnia",
+      "Mental Wellness"
+    ],
+    "recommendations_with_description": [
+      {
+        "package": "No More Insomnia",
+        "description": "*No More Insomnia:* \"restless_night\" at 70% is extremely high, making restful sleep a major priority.  This package directly addresses sleep concerns."
+      },
+      {
+        "package": "Mental Wellness",
+        "description": "*High Stress/Anxiety:* Both \"stress_management\" (45%) and \"anxiety\" (50%) are elevated. This indicates a need for stress reduction and anxiety management techniques."
+      }
+    ],
+    "exclusion_justification": "* *Fitness & Mobility:* While a moderate score for \"balanced_weight\" (35%) suggests some interest in fitness, it's not a primary concern compared to sleep and mental well-being.\n\n* *Boost Energy:*  Though \"lack_of_motivation\" (45%) might seem related, the core issue appears to be stress and anxiety, which are better addressed by the \"Mental Wellness\" package.\n\n* *Focus Flow:* \"lack_of_motivation\" could benefit from focus enhancement, but it's not as pressing as the overwhelming sleep deprivation and mental health concerns.\n* *Chronic Care:* The provided data doesn't indicate any specific chronic conditions requiring specialized support.",
+    "user summary": "Based on your responses, it seems like you're feeling overwhelmed by stress and struggling to get a good night's sleep.  You're already doing great with exercise, but right now, prioritizing your mental well-being is key.  We recommend packages focusing on stress reduction, anxiety management, and restful sleep.  These will provide you with the tools and techniques to feel calmer, more focused, and better rested.  Remember, making small changes can lead to big improvements in your overall well-being.",
+    "video script": "Feeling stressed and sleep-deprived? We hear you!  You're already crushing it with exercise, now let's focus on your mental well-being.  Our stress reduction, anxiety management, and sleep packages can help you find calm, focus, and restful nights.  Small changes, big impact on your overall health."
+  }

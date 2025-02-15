@@ -1,0 +1,137 @@
+.sidebar {
+  width: 250px;
+  background: white;
+  color: black;
+  height: 100vh;
+  padding: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: width 0.3s ease-in-out;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.sidebar.collapsed {
+  width: 100px;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 10px;
+}
+
+.sidebar-title {
+  font-size: 18px; /* Default size */
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+}
+
+.sidebar.collapsed .sidebar-title {
+  font-size: 22px; /* Make ITT larger */
+  font-weight: 700; /* Bold */
+  letter-spacing: 2px; /* Adds spacing */
+}
+
+
+.hidden {
+  display: none;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 10px 0;
+}
+
+li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+li a:hover {
+  color: blue;
+}
+
+.icon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.sidebar.collapsed .icon {
+  margin-right: 0;
+}
+
+.sidebar.collapsed li a {
+  justify-content: center;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: gray;
+  margin: 10px 0;
+}
+
+.footer-logo {
+  position: absolute;
+  padding-bottom: 1vh;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: -1; /* Sends the image to the back */
+}
+
+.footer-logo img {
+  max-width: 110px; /* Adjust size */
+  opacity: 0.3; /* Makes it fade into the background */
+  pointer-events: none; /* Prevents it from blocking button clicks */
+}
+
+
+/* Adjust when sidebar is collapsed */
+.sidebar.collapsed .footer-logo img {
+  width: 60px; /* Reduce size for better fit */
+}
+
+
+/* Content Adjustments */
+.main-layout {
+  display: flex;
+  transition: margin-left 0.3s ease-in-out;
+  margin-left: 30px;
+}
+
+.content {
+  flex-grow: 1;
+  margin-left: 250px; /* Adjust based on sidebar width */
+  transition: margin-left 0.3s ease-in-out;
+  padding: 20px;
+}
+
+.sidebar.collapsed + .content {
+  margin-left: 70px;
+}
+
+.active-btn {
+  background-color: rgba(59, 130, 246, 0.2); /* Light blue with 20% opacity */
+  border-radius: 8px;
+  padding: 10px;
+  transition: all 0.3s ease;
+}

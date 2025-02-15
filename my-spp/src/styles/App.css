@@ -1,0 +1,15 @@
+.app-container {
+  display: flex;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.content {
+  flex-grow: 1;
+  margin-left: 250px; /* Matches expanded sidebar width */
+  transition: margin-left 0.3s ease-in-out;
+  padding: 20px;
+}
+
+.content.collapsed {
+  margin-left: 90px; /* Matches collapsed sidebar width */
+}
