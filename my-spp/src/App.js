@@ -1,5 +1,6 @@
+// App.jsx
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
@@ -19,43 +20,56 @@ import AiRecruiter_chat from "./pages/Tools/AiRecruiter_chat";
 import TutorForm from "./form/TutorForm";
 import TutorList from "./form/TutorList";
 import SpeechToText from "./components/Speechtotext";
-
+import AuthForm from "./components/AuthForm"; // your login/register component
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
-
     <Router>
-      
-      <Navbar />
-      
-      <div className="main-layout">
-        <Sidebar toggleSidebar={setIsSidebarCollapsed} />
-        <div className={`content ${isSidebarCollapsed ? "collapsed" : ""}`}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/ai-interview-test" element={<InterviewTest />}/>
-            <Route path="/interview-practice" element={<PracticeTest />}/>
-            <Route path="/start-general-interview" element={<Start_General_Interview />}/>
-            <Route path="/job-role-interview" element={<JobRoleBasedInterview />}/>
-            <Route path="/job-description-interview" element={<JobDescriptionBasedInterview />}/>
-            <Route path="/training-session" element={<Training_session />}/>
-            <Route path="/resume-builder" element={<ResumeBuilder />}/>
-            <Route path="/interview-support" element={<InterviewSupport />}/>
-            <Route path="/contact" element={<Contact />}/>
-            <Route path="/live-interview" element={<LiveInterview />}/>
-            <Route path="/recruiter-chat" element={<RecruiterChat />}/>
-            <Route path="/ai-recruiter" element={<AiRecruiter_chat />}/>
-            <Route path="/tutor-form" element={<TutorForm/>}/>
-            <Route path="/tutor-list" element={<TutorList/>}/>
-            <Route path="/mic-on" element={<SpeechToText/>}/>
-            
-          
-                        
-          </Routes>
-        </div>
-      </div>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/login" element={<AuthForm />} />
+        {/* You can add a separate /register route if needed */}
+
+        {/* Protected Routes */}
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute>
+              <Navbar/>
+              <div className="main-layout">
+                <Sidebar toggleSidebar={setIsSidebarCollapsed} />
+                <div className={`content ${isSidebarCollapsed ? "collapsed" : ""}`}>
+                  
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/ai-interview-test" element={<InterviewTest />} />
+                    <Route path="/interview-practice" element={<PracticeTest />} />
+                    <Route path="/start-general-interview" element={<Start_General_Interview />} />
+                    <Route path="/job-role-interview" element={<JobRoleBasedInterview />} />
+                    <Route path="/job-description-interview" element={<JobDescriptionBasedInterview />} />
+                    <Route path="/training-session" element={<Training_session />} />
+                    <Route path="/resume-builder" element={<ResumeBuilder />} />
+                    <Route path="/interview-support" element={<InterviewSupport />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/live-interview" element={<LiveInterview />} />
+                    <Route path="/recruiter-chat" element={<RecruiterChat />} />
+                    <Route path="/ai-recruiter" element={<AiRecruiter_chat />} />
+                    <Route path="/tutor-form" element={<TutorForm />} />
+                    <Route path="/tutor-list" element={<TutorList />} />
+                    <Route path="/mic-on" element={<SpeechToText />} />
+                  </Routes>
+                </div>
+              </div>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Redirect any unknown paths to login */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
     </Router>
   );
 };

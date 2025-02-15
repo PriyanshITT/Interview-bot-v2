@@ -6,12 +6,17 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables import RunnableSequence
 import uuid
+from openpyxl import Workbook, load_workbook
+from flask import Flask, request, jsonify, send_file
+from flask_cors import CORS, cross_origin
+import os
 
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app, resources={
     r"/*": {
         "origins": [
+            "http://157.173.222.234:3000",
             "http://localhost:3000",
             "http://localhost:5173",
             "http://interviewbot.intraintech.com:5173"
@@ -126,5 +131,89 @@ def next_question():
     except Exception as e:
         return jsonify({"error": f"Error generating next question: {str(e)}"}), 500
 
+
+
+
+
+
+
+
+
+EXCEL_FILE = 'users.xlsx'
+
+def init_excel():
+    if not os.path.exists(EXCEL_FILE):
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Users"
+        headers = ["Full Name", "Email", "Phone", "Password"]
+        ws.append(headers)
+        wb.save(EXCEL_FILE)
+
+def add_user(full_name, email, phone, password):
+    init_excel()
+    wb = load_workbook(EXCEL_FILE)
+    ws = wb.active
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        if row[1] == email:
+            return False
+    ws.append([full_name, email, phone, password])
+    wb.save(EXCEL_FILE)
+    return True
+
+def find_user(email, password):
+    if not os.path.exists(EXCEL_FILE):
+        return None
+    wb = load_workbook(EXCEL_FILE)
+    ws = wb.active
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        if row[1] == email and row[3] == password:
+            return row
+    return None
+
+@app.route('/register', methods=['POST', 'OPTIONS'])
+def register():
+    data = request.get_json()
+    full_name = data.get('full_name')
+    email = data.get('email')
+    phone = data.get('phone')
+    password = data.get('password')
+    
+    if not all([full_name, email, phone, password]):
+        return jsonify({'message': 'Missing required fields'}), 400
+
+    if not add_user(full_name, email, phone, password):
+        return jsonify({'message': 'User already exists'}), 400
+
+    return jsonify({'message': 'Registration successful'}), 200
+
+@app.route('/login', methods=['POST', 'OPTIONS'])
+def login():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+
+    if not all([email, password]):
+        return jsonify({'message': 'Missing email or password'}), 400
+
+    user = find_user(email, password)
+    if user:
+        return jsonify({'message': 'Login successful'}), 200
+    else:
+        return jsonify({'message': 'Invalid email or password'}), 401
+
+@app.route('/download', methods=['GET', 'OPTIONS'])
+def download():
+    if not os.path.exists(EXCEL_FILE):
+        return jsonify({'message': 'No users registered yet.'}), 404
+    return send_file(EXCEL_FILE, as_attachment=True)
+
+
+
+
+
+
+
 if __name__ == '__main__':
+    init_excel()
     app.run(host='0.0.0.0', port=5041)

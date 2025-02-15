@@ -29,6 +29,7 @@ os.environ["GROQ_API_KEY"] = 'gsk_6LTFuKKN3TZ8Z35nD5ivWGdyb3FYnbGUCRiV6W326hkqnq
 CORS(app, resources={
     r"/*": {
         "origins": [
+            "http://157.173.222.234:3000",
             "http://157.173.222.234:5173",
             "http://localhost:3000", 
             "https://interviewbot.intraintech.com"
@@ -37,7 +38,7 @@ CORS(app, resources={
 })
 # Configuration for uploads
 UPLOAD_FOLDER = 'uploads'
-CHROMA_DB_FOLDER = '/mnt/d/21AI_Interviewbot/main/Interview-bot-v2/flask-backend/chroma_db'
+CHROMA_DB_FOLDER = '/root/interviewbot/Interview-bot-v2/flask-backend/chroma_db'
 ALLOWED_EXTENSIONS = {'pdf'}
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER

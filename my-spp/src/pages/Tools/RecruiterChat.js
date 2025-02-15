@@ -10,9 +10,9 @@ export default function ResumeBuilder() {
       style={{
         backgroundImage:
           "url('https://t4.ftcdn.net/jpg/04/39/69/99/360_F_439699926_GkaQTcxPchsvvtdrZ98cFQh1a8HQICwP.jpg')",
-          backgroundRepeat: "no-repeat", // ✅ Prevents repeating
-          backgroundSize: "cover", // ✅ Stretches image to cover the whole div
-          backgroundPosition: "center", // ✅ Centers the image
+        backgroundRepeat: "no-repeat", // Prevents repeating
+        backgroundSize: "cover", // Stretches image to cover the whole div
+        backgroundPosition: "center", // Centers the image
       }}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -21,14 +21,25 @@ export default function ResumeBuilder() {
           className="relative w-80 h-96 p-6 bg-white/20 backdrop-blur-lg rounded-2xl shadow-xl border border-white/30 cursor-pointer transition-transform transform hover:scale-105 hover:shadow-2xl"
           onClick={() => navigate("/human-recruiter")}
         >
-          <h2 className="text-3xl font-bold text-white text-center mb-4 drop-shadow-lg">
-            Human Recruiter
-          </h2>
-          <p className="text-lg text-white text-center">
-            Get your resume analyzed by professional human recruiters.
-          </p>
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-lg font-semibold text-white">
-            → Click to Proceed
+          <div className="flex flex-col h-full justify-between items-center">
+            <div className="w-full text-center mt-4">
+              <h2 className="text-3xl font-bold text-white drop-shadow-lg">
+                Human Recruiter
+              </h2>
+              <p className="text-lg text-white">
+                Get your resume analyzed by professional human recruiters.
+              </p>
+            </div>
+            <div className="flex items-center justify-center">
+              {/* Human Icon: enlarged and perfectly centered */}
+              <span className="text-8xl">👤</span>
+              
+            </div>
+            <div className="w-full text-center mb-4">
+              <span className="text-lg font-semibold text-white">
+                → Click to Proceed
+              </span>
+            </div>
           </div>
         </div>
 
@@ -37,14 +48,28 @@ export default function ResumeBuilder() {
           className="relative w-80 h-96 p-6 bg-white/20 backdrop-blur-lg rounded-2xl shadow-xl border border-white/30 cursor-pointer transition-transform transform hover:scale-105 hover:shadow-2xl"
           onClick={() => navigate("/ai-recruiter")}
         >
-          <h2 className="text-3xl font-bold text-white text-center mb-4 drop-shadow-lg">
-            AI Recruiter
-          </h2>
-          <p className="text-lg text-white text-center">
-            Let AI analyze your resume and provide instant feedback.
-          </p>
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-lg font-semibold text-white">
-            → Click to Proceed
+          <div className="flex flex-col h-full justify-between items-center">
+            <div className="w-full text-center mt-4">
+              <h2 className="text-3xl font-bold text-white drop-shadow-lg">
+                AI Recruiter
+              </h2>
+              <p className="text-lg text-white">
+                Let AI analyze your resume and provide instant feedback.
+              </p>
+            </div>
+            <div className="flex items-center justify-center">
+              {/* AI Icon using the provided URL */}
+              <img
+                src="https://www.iconshock.com/image/RealVista/Development/chat_bot"
+                alt="AI Chat Bot Icon"
+                className="w-[7rem] h-[7rem]"
+              />
+            </div>
+            <div className="w-full text-center mb-4">
+              <span className="text-lg font-semibold text-white">
+                → Click to Proceed
+              </span>
+            </div>
           </div>
         </div>
       </div>

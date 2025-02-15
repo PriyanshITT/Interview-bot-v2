@@ -3,7 +3,7 @@ import "../index.css";
 
 const Home = () => {
   return (
-    <div className="min-h-[88vh] bg-white flex flex-col items-center justify-center p-6">
+    <div className="min-h-[88vh] bg-white flex flex-col items-center justify-center p-6 bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300 overflow-hidden">
       {/* Hero Section */}
       <h1 className="text-5xl font-extrabold text-center text-gray-900">
         AI Efficiency + Human Expertise = Perfect Hiring!

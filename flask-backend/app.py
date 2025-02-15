@@ -6,7 +6,19 @@ from interview import start_interview_handler, next_question_handler
 
 
 app = Flask(__name__)
-CORS(app)  # Allow all frontend requests
+CORS(app, resources={
+    r"/*": {
+        "origins": [
+            "http://157.173.222.234:3000",
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://interviewbot.intraintech.com:5173",
+	    "http://127.0.0.1:5000",
+	    "https://interviewbot.intraintech.com"
+        ]
+    }
+})
+
 
 @app.route("/send-email", methods=["POST"])
 def send_email_route():
@@ -70,7 +82,16 @@ def next_question():
         next_question_text = next_question_handler(session_id, user_answer)
         return jsonify({"question": next_question_text, "session_id": session_id})
     except Exception as e:
+
         return jsonify({"error": f"Error generating next question: {str(e)}"}), 500
 
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+
+
+
+
+
+
+
+
+if __name__ == "__main__":	
+    app.run(host='0.0.0.0', port=5050)
