@@ -11,6 +11,7 @@ const InterviewTest = () => {
   const [role, setRole] = useState("");
   const [customRole, setCustomRole] = useState(""); // for Role "Other"
   const [file, setFile] = useState(null);
+  const [jobDescription, setJobDescription] = useState("");
 
   // Additional fields for job-role based interview
   const [experience, setExperience] = useState("");
@@ -77,10 +78,11 @@ const InterviewTest = () => {
         return;
       }
     } else {
-      if (!role || (role === "Other" && !customRole) || !file) {
-        alert("Please select a job role and upload the job description.");
+      if (!role || (role === "Other" && !customRole) || !jobDescription) {
+        alert("Please select a job role and enter the job description.");
         return;
       }
+      
     }
 
     // Prepare final values
@@ -111,7 +113,7 @@ const InterviewTest = () => {
     //   .catch(error => console.error("Upload error:", error));
 
     // Passing data to the next page (if required)
-    const data = { role: finalRole, fileName: file.name, interviewType,file:file};
+    const data = { role: finalRole, jobDescription, interviewType };
     if (interviewType === "job-role") {
       data.experience = experience;
       data.companyName = finalCompanyName;
@@ -308,6 +310,7 @@ const InterviewTest = () => {
                   <option value="AI Specialist">AI Specialist</option>
                   <option value="Other">Other</option>
                 </select>
+
                 {role === "Other" && (
                   <input
                     type="text"
@@ -318,14 +321,16 @@ const InterviewTest = () => {
                   />
                 )}
 
-                {/* File Upload for Job Description */}
-                <label className="block text-gray-700">Upload Job Description</label>
-                <input
-                  type="file"
-                  className="w-full p-2 border rounded-md mb-3"
-                  onChange={handleFileUpload}
-                />
+                {/* Job Description Input Field */}
+                <label className="block text-gray-700">Job Description</label>
+                <textarea
+                  className="w-full p-2 border rounded-md mb-3 h-32"
+                  value={jobDescription}
+                  onChange={(e) => setJobDescription(e.target.value)}
+                  placeholder="Enter job description here"
+                ></textarea>
               </>
+
             )}
 
             <div className="flex justify-end space-x-2 mt-4">

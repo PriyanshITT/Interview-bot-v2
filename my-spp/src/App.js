@@ -22,6 +22,7 @@ import TutorList from "./form/TutorList";
 import SpeechToText from "./components/Speechtotext";
 import AuthForm from "./components/AuthForm"; // your login/register component
 import ProtectedRoute from "./components/ProtectedRoute";
+import PracticeCodingInterview from "./pages/Interview/PracticeCodingInterview";
 
 const App = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -60,6 +61,7 @@ const App = () => {
                     <Route path="/tutor-form" element={<TutorForm />} />
                     <Route path="/tutor-list" element={<TutorList />} />
                     <Route path="/mic-on" element={<SpeechToText />} />
+                    <Route path="/start-coding-interview" element={<PracticeCodingInterview />} />
                   </Routes>
                 </div>
               </div>

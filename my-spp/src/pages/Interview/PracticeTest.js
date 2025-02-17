@@ -34,6 +34,16 @@ const PracticeTest = () => {
     "Other",
   ];
 
+  const codingSkillSuggestions = [
+    "JavaScript",
+    "Python",
+    "Java",
+    "C++",
+    "C#",
+    "Ruby",
+    "Other",
+  ];
+
   // Domain options (modified from Knowledge Domain options)
   const domainOptions = [
     "General",
@@ -80,7 +90,9 @@ const PracticeTest = () => {
     };
 
     // You can choose to navigate to a different route based on interviewType if needed.
-    navigate("/start-general-interview", { state: formData });
+    const destination =
+  interviewType === "General" ? "/start-general-interview" : "/start-coding-interview";
+  navigate(destination, { state: formData });
   };
 
   return (
@@ -193,33 +205,35 @@ const PracticeTest = () => {
             />
 
             {/* Skills (Required) */}
-            <label className="block text-gray-700 mb-1 font-medium">
-              Select Key Skill(s)
-            </label>
-            <select
-              value={skills}
-              onChange={(e) => {
-                setSkills(e.target.value);
-                if (e.target.value !== "Other") setSkillsOther("");
-              }}
-              className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
-            >
-              <option value="">Select a skill (Required)</option>
-              {skillSuggestions.map((skill) => (
-                <option key={skill} value={skill}>
-                  {skill}
-                </option>
-              ))}
-            </select>
-            {skills === "Other" && (
-              <input
-                type="text"
-                placeholder="Enter your skill"
-                value={skillsOther}
-                onChange={(e) => setSkillsOther(e.target.value)}
-                className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
-              />
-            )}
+            {/* Skills (Required) */}
+                <label className="block text-gray-700 mb-1 font-medium">
+                  Select Key Skill(s)
+                </label>
+                <select
+                  value={skills}
+                  onChange={(e) => {
+                    setSkills(e.target.value);
+                    if (e.target.value !== "Other") setSkillsOther("");
+                  }}
+                  className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
+                >
+                  <option value="">Select a skill (Required)</option>
+                  {(interviewType === "Coding Interview" ? codingSkillSuggestions : skillSuggestions).map((skill) => (
+                    <option key={skill} value={skill}>
+                      {skill}
+                    </option>
+                  ))}
+                </select>
+                {skills === "Other" && (
+                  <input
+                    type="text"
+                    placeholder="Enter your skill"
+                    value={skillsOther}
+                    onChange={(e) => setSkillsOther(e.target.value)}
+                    className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none"
+                  />
+                )}
+
 
             {/* Domain (Required only for General Interview) */}
             {interviewType === "General" && (
