@@ -1,12 +1,16 @@
 // AuthForm.jsx
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { useNavigate } from "react-router-dom";
-const flaskBaseUrl = process.env.REACT_APP_PRACTICE_URL;
 
+import { AuthContext } from "../services/AuthContext";
+const SpringBootUrl = process.env.REACT_APP_SPRINGBOOT_URL;
 const AuthForm = () => {
+
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [message, setMessage] = useState('');
+  
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
@@ -21,52 +25,80 @@ const AuthForm = () => {
   const [registerPassword, setRegisterPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    number:"",
+    role: ["user"],
+    
+    name: "",
+  
+  });
+
+
+
   const handleLogin = async (e) => {
     e.preventDefault();
+     // Start loading animation
+
     try {
-      const response = await fetch(`${flaskBaseUrl}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: loginEmail,
-          password: loginPassword,
-        }),
+      const response = await fetch(`${SpringBootUrl}/api/auth/signin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: loginEmail, password :loginPassword }),
       });
-      const data = await response.json();
-      if (data.message === "Login successful") {
-        localStorage.setItem("isAuthenticated", "true");
-        navigate("/");
-      } else {
-        setMessage(data.message);
+
+      if (!response.ok) {
+        throw new Error("Login failed");
       }
+
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      login(data.token, {
+        id: data.id,
+        username: data.username,
+        roles: data.roles,
+      });
+
+      navigate("/interview-practice");
     } catch (error) {
-      setMessage("Error during login.");
-      console.error(error);
+      console.error("Error:", error.message);
+    } finally {
+       // Stop loading animation
     }
   };
 
+
+
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (registerPassword !== confirmPassword) {
-      setMessage("Passwords do not match.");
-      return;
-    }
+
     try {
-      const response = await fetch(`${flaskBaseUrl}/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch(`${SpringBootUrl}/api/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          full_name: fullName,
-          email: registerEmail,
-          phone: countryCode + phone,
+          name: fullName,
+          username: registerEmail,
+          number: countryCode + phone,
+          role: ["user"],
+
           password: registerPassword,
         }),
       });
-      const data = await response.json();
-      setMessage(data.message);
+
+      if (response.ok) {
+        const result = await response.json();
+        alert("Registration successful!");
+        console.log("Response:", result);
+      } else {
+        alert("Registration failed.");
+        console.error("Error:", response.status, response.statusText);
+      }
     } catch (error) {
-      setMessage('Error during registration.');
-      console.error(error);
+      console.error("Error:", error);
     }
   };
 

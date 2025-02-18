@@ -1,14 +1,18 @@
 import React from "react";
+import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
+import { AuthContext } from "../services/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
 
   const handleLogout = () => {
-    // Remove the authentication flag from localStorage
-    localStorage.removeItem("isAuthenticated");
-    // Navigate to the login page
+    
+    
+    logout();
+    
     navigate("/login");
   };
 
