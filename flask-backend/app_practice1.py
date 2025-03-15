@@ -1,17 +1,14 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
+import uuid
+import os
+from openpyxl import Workbook, load_workbook
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_groq import ChatGroq
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables import RunnableSequence
-import uuid
-from openpyxl import Workbook, load_workbook
-from flask import Flask, request, jsonify, send_file
-from flask_cors import CORS, cross_origin
-import os
 
-# Initialize Flask app
 app = Flask(__name__)
 CORS(app, resources={
     r"/*": {
@@ -19,13 +16,17 @@ CORS(app, resources={
             "http://157.173.222.234:3000",
             "http://localhost:3000",
             "http://localhost:5173",
-            "http://interviewbot.intraintech.com:5173"
+            "http://interviewbot.intraintech.com:5173",
+            "http://127.0.0.1:3000"
         ]
     }
-})
+}, supports_credentials=True)
 
 # Global session storage
 sessions = {}
+
+# Initialize ChatGroq LLM instance (use your API key and model name)
+llm = ChatGroq(groq_api_key='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', model_name="llama-3.3-70b-versatile")
 
 @app.route('/start_interview', methods=['POST'])
 def start_interview():
@@ -38,26 +39,23 @@ def start_interview():
 
     if not skills or not experience or not interview_type or not domain or not level:
         return jsonify({"error": "All fields including level are required."}), 400
-    
+
     system_prompt = f"""
     You are an AI interview bot conducting a **{level} level** technical interview for a candidate skilled in **{skills}**, with **{experience}** experience in the **{domain}** domain. 
-    
-    Your role is to ask **only one technical question** strictly related to the candidate's expertise.  
-    - Do not ask any coding related questions
-    - Do not provide any introduction, explanation, or difficulty level.  
-    - Ensure questions align with real-world applications and problem-solving within **{domain}**.  
-    - Questions should be appropriate for a candidate with **{experience}** experience in **{skills}**.  
+    Your role is to ask **only one technical question** strictly related to the candidate's expertise.
+    - Do not ask any coding related questions.
+    - Do not provide any introduction or explanation.
+    - Ensure questions align with real-world applications in **{domain}**.
     """
-    
+
     question_prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),
         MessagesPlaceholder("chat_history"),
         ("human", "{input}")
     ])
-    
-    llm = ChatGroq(groq_api_key='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', model_name="llama-3.3-70b-versatile")
+
     question_chain = RunnableSequence(question_prompt | llm)
-    
+
     conversational_chain = RunnableWithMessageHistory(
         question_chain,
         lambda _: ChatMessageHistory(),
@@ -73,7 +71,8 @@ def start_interview():
             "interview_type": interview_type,
             "domain": domain,
             "level": level
-        }
+        },
+        "responses": []  # store dicts with question and answer
     }
 
     try:
@@ -89,10 +88,9 @@ def start_interview():
             },
             {"configurable": {"session_id": session_id}}
         )
-        
         first_question = response.content if hasattr(response, 'content') else 'No question generated.'
+        sessions[session_id]["details"]["last_question"] = first_question
         return jsonify({"question": first_question, "session_id": session_id})
-    
     except Exception as e:
         return jsonify({"error": f"Error generating question: {str(e)}"}), 500
 
@@ -101,6 +99,7 @@ def next_question():
     data = request.get_json()
     session_id = data.get('session_id')
     user_answer = data.get('user_answer')
+    final_flag = data.get('final', False)
 
     if not session_id or not user_answer:
         return jsonify({"error": "Session ID and user answer are required."}), 400
@@ -111,6 +110,16 @@ def next_question():
 
     conversational_chain = session_data["chain"]
     details = session_data["details"]
+
+    # Save the user's response with the last asked question.
+    session_data["responses"].append({
+        "question": details.get("last_question", "Unknown question"),
+        "answer": user_answer
+    })
+
+    if final_flag:
+        # If final_flag is true, simply return a confirmation message.
+        return jsonify({"message": "Final answer recorded.", "session_id": session_id})
 
     try:
         response = conversational_chain.invoke(
@@ -124,96 +133,85 @@ def next_question():
             },
             {"configurable": {"session_id": session_id}}
         )
-
         next_question_text = response.content if hasattr(response, 'content') else 'No next question generated.'
+        sessions[session_id]["details"]["last_question"] = next_question_text
         return jsonify({"question": next_question_text, "session_id": session_id})
-    
     except Exception as e:
         return jsonify({"error": f"Error generating next question: {str(e)}"}), 500
 
-
-
-
-
-
-
-
-
-EXCEL_FILE = 'users.xlsx'
-
-def init_excel():
-    if not os.path.exists(EXCEL_FILE):
-        wb = Workbook()
-        ws = wb.active
-        ws.title = "Users"
-        headers = ["Full Name", "Email", "Phone", "Password"]
-        ws.append(headers)
-        wb.save(EXCEL_FILE)
-
-def add_user(full_name, email, phone, password):
-    init_excel()
-    wb = load_workbook(EXCEL_FILE)
-    ws = wb.active
-    for row in ws.iter_rows(min_row=2, values_only=True):
-        if row[1] == email:
-            return False
-    ws.append([full_name, email, phone, password])
-    wb.save(EXCEL_FILE)
-    return True
-
-def find_user(email, password):
-    if not os.path.exists(EXCEL_FILE):
-        return None
-    wb = load_workbook(EXCEL_FILE)
-    ws = wb.active
-    for row in ws.iter_rows(min_row=2, values_only=True):
-        if row[1] == email and row[3] == password:
-            return row
-    return None
-
-@app.route('/register', methods=['POST', 'OPTIONS'])
-def register():
+@app.route('/finish_interview', methods=['POST'])
+def finish_interview():
     data = request.get_json()
-    full_name = data.get('full_name')
-    email = data.get('email')
-    phone = data.get('phone')
-    password = data.get('password')
-    
-    if not all([full_name, email, phone, password]):
-        return jsonify({'message': 'Missing required fields'}), 400
+    session_id = data.get('session_id')
+    if not session_id:
+        return jsonify({"error": "Session ID is required."}), 400
 
-    if not add_user(full_name, email, phone, password):
-        return jsonify({'message': 'User already exists'}), 400
+    session_data = sessions.get(session_id)
+    if not session_data:
+        return jsonify({"error": "Invalid session ID."}), 400
 
-    return jsonify({'message': 'Registration successful'}), 200
+    responses = session_data.get("responses", [])
+    if not responses:
+        return jsonify({"error": "No responses recorded."}), 400
 
-@app.route('/login', methods=['POST', 'OPTIONS'])
-def login():
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
+    marks_detail = []
+    total_score = 0
+    max_total = 5 * len(responses)  # each question is out of 5
 
-    if not all([email, password]):
-        return jsonify({'message': 'Missing email or password'}), 400
+    for item in responses:
+        question = item.get("question")
+        answer = item.get("answer")
 
-    user = find_user(email, password)
-    if user:
-        return jsonify({'message': 'Login successful'}), 200
-    else:
-        return jsonify({'message': 'Invalid email or password'}), 401
+        # Prompt to evaluate the user's answer and provide a score
+        grading_prompt = f"""
+        You are an AI evaluator. Evaluate the following answer for the given interview question.
+        Question: {question}
+        Answer: {answer}
+        Provide a score out of 5 based on accuracy, depth, and clarity. Respond with only the number.
+        """
+        try:
+            grade_response = llm.invoke(grading_prompt)
+            score_str = grade_response.content.strip() if hasattr(grade_response, 'content') else "0"
+            try:
+                score = float(score_str)
+            except ValueError:
+                score = 0
+        except Exception as e:
+            score = 0
 
-@app.route('/download', methods=['GET', 'OPTIONS'])
-def download():
-    if not os.path.exists(EXCEL_FILE):
-        return jsonify({'message': 'No users registered yet.'}), 404
-    return send_file(EXCEL_FILE, as_attachment=True)
+        correct_answer_prompt = f"""
+        You are an expert in the relevant domain. Provide the correct answer to the following technical interview question. 
+        The answer should be concise (1-3 sentences, max 50 words) and clear, focusing on the key points without excessive detail or oversimplification.
+        Question: {question}
+        Respond with only the answer, no additional explanation.
+        """
+        try:
+            correct_answer_response = llm.invoke(correct_answer_prompt)
+            correct_answer = correct_answer_response.content.strip() if hasattr(correct_answer_response, 'content') else "Unable to generate correct answer."
+        except Exception as e:
+            correct_answer = "Error generating correct answer."
 
+        marks_detail.append({
+            "question": question,
+            "answer": answer,
+            "correct_answer": correct_answer,
+            "score": score,
+            "max_score": 5
+        })
+        total_score += score
 
+    passing_threshold = 0.4 * max_total
+    result = "Pass" if total_score >= passing_threshold else "Fail"
+    recommendations = "Review the areas where your responses scored lower. Practice problem solving and review key technical concepts."
 
-
-
-
+    report = {
+        "marks_detail": marks_detail,
+        "total_score": total_score,
+        "max_score": max_total,
+        "result": result,
+        "recommendations": recommendations
+    }
+    return jsonify(report)
 
 if __name__ == '__main__':
-    init_excel()
     app.run(host='0.0.0.0', port=5041)

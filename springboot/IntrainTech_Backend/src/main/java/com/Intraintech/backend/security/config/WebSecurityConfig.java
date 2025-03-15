@@ -68,6 +68,7 @@ public class WebSecurityConfig {
                     config.addAllowedOrigin("http://157.173.222.234:3000");
                     config.addAllowedOrigin("https://interviewbot.intraintech.com");
                     config.addAllowedOrigin("http://interviewbot.intraintech.com:3000");
+                    config.addAllowedOrigin("https://ai4interviews.com");
                     config.addAllowedOrigin("http://157.173.222.234:5040");
                     config.addAllowedOrigin("http://localhost:3000"); // Your frontend URL
                     config.addAllowedOrigin("http://127.0.0.1:5000");
@@ -79,7 +80,7 @@ public class WebSecurityConfig {
                 }))
                 .exceptionHandling(e->e.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(e -> e.requestMatchers("/api/auth/**", "/api/test/**","/welcome","/api/question-answers/add/**","/api/tutors/**").permitAll()
+                .authorizeHttpRequests(e -> e.requestMatchers("/api/email/**","/api/auth/**", "/api/test/**","/welcome","/api/question-answers/add/**","/api/tutors/**").permitAll()
                         .anyRequest().authenticated());
     
 
@@ -98,7 +99,7 @@ public class WebSecurityConfig {
         @Override
         public void addCorsMappings(CorsRegistry registry) {
             registry.addMapping("/**")
-                    .allowedOrigins("http://157.173.222.234:3000","http://157.173.222.234:5040","http://interviewbot.intraintech.com:3000","http://interviewbot.intraintech.com")
+                    .allowedOrigins("http://157.173.222.234:3000","http://157.173.222.234:5040","http://interviewbot.intraintech.com:3000","https://ai4interviews.com","http://interviewbot.intraintech.com")
                     .allowedOrigins("http://localhost:3000","http://127.0.0.1:5000",frontEndUrl) // Your frontend URL
                     .allowedMethods("GET", "POST", "PUT", "DELETE");
         }

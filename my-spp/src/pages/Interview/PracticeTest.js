@@ -35,12 +35,10 @@ const PracticeTest = () => {
   ];
 
   const codingSkillSuggestions = [
-    "JavaScript",
     "Python",
     "Java",
     "C++",
-    "C#",
-    "Ruby",
+    "HTML",
     "Other",
   ];
 

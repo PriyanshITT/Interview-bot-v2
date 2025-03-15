@@ -22,7 +22,7 @@ const Sidebar = ({ toggleSidebar }) => {
         {collapsed ? <FaChevronRight /> : <FaChevronLeft />}
       </button>
 
-      <h2 className="sidebar-title">{collapsed ? "ITT" : "IntrainTech’s Interview Buddy"}</h2>
+      <h2 className="sidebar-title">{collapsed ? "ITT" : "AInterviewers"}</h2>
 
       <ul>
         <li className={location.pathname === "/" ? "active-btn" : ""}>

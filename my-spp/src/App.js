@@ -24,6 +24,7 @@
   
   import PracticeCodingInterview from "./pages/Interview/PracticeCodingInterview";
   import PrivateRoute from "./services/PrivateRoute";
+  import ProfilePage from "./pages/Profile/ProfilePage";
 
   const App = () => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -46,6 +47,7 @@
                   <div className={`content ${isSidebarCollapsed ? "collapsed" : ""}`}>
                     
                     <Routes>
+                      <Route path="/results" element={<ProfilePage/>} />
                       <Route path="/" element={<Home />} />
                       <Route path="/ai-interview-test" element={<InterviewTest />} />
                       <Route path="/interview-practice" element={<PracticeTest />} />
@@ -64,7 +66,7 @@
                       <Route path="/mic-on" element={<SpeechToText />} />
                       <Route path="/start-coding-interview" element={<PracticeCodingInterview />} />
                       
-
+                       
                     </Routes>
                   </div>
                 </div>

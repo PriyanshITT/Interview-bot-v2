@@ -1,199 +1,246 @@
-// AuthForm.jsx
-import React, { useState,useContext } from 'react';
-import { useNavigate } from "react-router-dom";
-
-import { AuthContext } from "../services/AuthContext";
-const SpringBootUrl = process.env.REACT_APP_SPRINGBOOT_URL;
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../services/AuthContext';
+import { gsap } from 'gsap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../styles/AuthForm.css';
+const SpringBootUrl=process.env.REACT_APP_SPRINGBOOT_URL;
 const AuthForm = () => {
+    const { login } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const [isLogin, setIsLogin] = useState(true);
+    const [message, setMessage] = useState('');
 
-  const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
-  const [message, setMessage] = useState('');
-  
+    // Login form state
+    const [loginEmail, setLoginEmail] = useState('');
+    const [loginPassword, setLoginPassword] = useState('');
 
-  // Login form state
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+    // Register form state
+    const [fullName, setFullName] = useState('');
+    const [registerEmail, setRegisterEmail] = useState('');
+    const [countryCode, setCountryCode] = useState('+91');
+    const [phone, setPhone] = useState('');
+    const [registerPassword, setRegisterPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
-  // Register form state
-  const [fullName, setFullName] = useState('');
-  const [registerEmail, setRegisterEmail] = useState('');
-  // Phone input state (with country code selector)
-  const [countryCode, setCountryCode] = useState('+1');
-  const [phone, setPhone] = useState('');
-  const [registerPassword, setRegisterPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+    useEffect(() => {
+        gsap.set('.auth-form form', { opacity: 0, y: 20 });
+        gsap.to('.auth-form form', {
+            opacity: 1,
+            y: 0,
+            duration: 0.3,
+            ease: 'power2.out',
+        });
+    }, []);
 
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    number:"",
-    role: ["user"],
-    
-    name: "",
-  
-  });
+    const toggleForm = (isLogin) => {
+        setIsLogin(isLogin);
+        setMessage('');
+        gsap.to('.auth-form .login-form', {
+            maxHeight: isLogin ? '400px' : 0,
+            opacity: isLogin ? 1 : 0,
+            duration: 0.3,
+            ease: 'power2.out',
+        });
+        gsap.to('.auth-form .register-form', {
+            maxHeight: !isLogin ? '400px' : 0,
+            opacity: !isLogin ? 1 : 0,
+            duration: 0.3,
+            ease: 'power2.out',
+        });
+    };
 
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(`${SpringBootUrl}/api/auth/signin`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: loginEmail, password: loginPassword }),
+            });
 
+            if (!response.ok) {
+                throw new Error('Login failed');
+            }
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-     // Start loading animation
+            const data = await response.json();
+            localStorage.setItem('token', data.token);
+            login(data.token, {
+                id: data.id,
+                username: data.username,
+                roles: data.roles,
+            });
 
-    try {
-      const response = await fetch(`${SpringBootUrl}/api/auth/signin`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: loginEmail, password :loginPassword }),
-      });
+            // Show success toast
+            toast.success('Login successful! Redirecting...', {
+                position: 'top-right',
+                autoClose: 3000,
+            });
 
-      if (!response.ok) {
-        throw new Error("Login failed");
-      }
+              setTimeout(() => {
+                navigate('/interview-practice');
+            }, 3000);
+        } catch (error) {
+            console.error('Error:', error.message);
 
-      const data = await response.json();
-      localStorage.setItem("token", data.token);
-      login(data.token, {
-        id: data.id,
-        username: data.username,
-        roles: data.roles,
-      });
+            // Show error toast
+            toast.error('Login failed. Please check your credentials.', {
+                position: 'top-right',
+                autoClose: 3000,
+            });
+        }
+    };
 
-      navigate("/interview-practice");
-    } catch (error) {
-      console.error("Error:", error.message);
-    } finally {
-       // Stop loading animation
-    }
-  };
+    const handleRegister = async (e) => {
+        e.preventDefault();
 
+        try {
+            const response = await fetch(`${SpringBootUrl}/api/auth/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: fullName,
+                    username: registerEmail,
+                    number: countryCode + phone,
+                    role: ['user'],
+                    password: registerPassword,
+                }),
+            });
 
+            if (response.ok) {
+                const result = await response.json();
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
+                // Show success toast
+                toast.success('Registration successful!', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                });
+                setTimeout(() => {
+                    toggleForm(true);
+                }, 3000);
+                
+            } else {
+                // Show error toast
+                toast.error('Registration failed. Please try again.', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                });
 
-    try {
-      const response = await fetch(`${SpringBootUrl}/api/auth/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: fullName,
-          username: registerEmail,
-          number: countryCode + phone,
-          role: ["user"],
+                console.error('Error:', response.status, response.statusText);
+            }
+        } catch (error) {
+            console.error('Error:', error);
 
-          password: registerPassword,
-        }),
-      });
+            // Show error toast
+            toast.error('An error occurred. Please try again.', {
+                position: 'top-right',
+                autoClose: 3000,
+            });
+        }
+    };
 
-      if (response.ok) {
-        const result = await response.json();
-        alert("Registration successful!");
-        console.log("Response:", result);
-      } else {
-        alert("Registration failed.");
-        console.error("Error:", response.status, response.statusText);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+    return (
+        <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300 overflow-hidden">
+            <ToastContainer
+    position="top-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    newestOnTop={false}
+    closeOnClick
+    rtl={false}
+    pauseOnFocusLoss
+    draggable
+    pauseOnHover
+/>
+            <div className="relative z-10 flex items-center justify-center min-h-screen">
+            <div className={`auth-form bg-white rounded-lg shadow-lg flex flex-col md:flex-row w-full max-w-3xl ${!isLogin ? 'active-register' : ''}`}>
+                    <div className="md:w-1/2">
+                        <img
+                            src="https://interview.intraintech.com/wp-content/uploads/2024/07/11-768x768.jpg"
+                            alt="Booklet Side"
+                            className="object-cover h-full w-full rounded-l-lg"
+                        />
+                    </div>
+                    <div className="w-full md:w-1/2 p-8">
+                        <div className="form-toggle-buttons">
+                            <button
+                                onClick={() => toggleForm(true)}
+                                className={isLogin ? 'active' : ''}
+                            >
+                                Login
+                            </button>
+                            <button
+                                onClick={() => toggleForm(false)}
+                                className={!isLogin ? 'active' : ''}
+                            >
+                                Register
+                            </button>
+                        </div>
+                        {message && <div className="mb-4 text-center text-red-500">{message}</div>}
 
-  return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300 overflow-hidden">
-      {/* Fluid Simulation Background */}
-      {/* <FluidSimulation /> */}
+                        <div className="login-form">
+                            <form onSubmit={handleLogin}>
+                                <div className="mb-4">
+                                    <label className="block mb-1 font-medium">Email</label>
+                                    <input
+                                        type="email"
+                                        value={loginEmail}
+                                        onChange={(e) => setLoginEmail(e.target.value)}
+                                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-6">
+                                    <label className="block mb-1 font-medium">Password</label>
+                                    <input
+                                        type="password"
+                                        value={loginPassword}
+                                        onChange={(e) => setLoginPassword(e.target.value)}
+                                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+                                        required
+                                    />
+                                </div>
+                                <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition">
+                                    Login
+                                </button>
+                            </form>
+                        </div>
 
-      {/* Auth Form Booklet (foreground) */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen">
-        <div className="bg-white rounded-lg shadow-lg flex flex-col md:flex-row w-full max-w-4xl">
-          {/* Left side of the booklet: Image */}
-          <div className="md:w-1/2">
-            <img
-              src="https://interview.intraintech.com/wp-content/uploads/2024/07/11-768x768.jpg"
-              alt="Booklet Side"
-              className="object-cover h-full w-full rounded-l-lg"
-            />
-          </div>
-          {/* Right side of the booklet: Auth Form */}
-          <div className="w-full md:w-1/2 p-8">
-            <div className="flex justify-center mb-6">
-              <button
-                onClick={() => { setIsLogin(true); setMessage(''); }}
-                className={`px-4 py-2 font-semibold ${isLogin ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
-              >
-                Login
-              </button>
-              <button
-                onClick={() => { setIsLogin(false); setMessage(''); }}
-                className={`px-4 py-2 font-semibold ${!isLogin ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
-              >
-                Register
-              </button>
-            </div>
-            {message && <div className="mb-4 text-center text-red-500">{message}</div>}
-            {isLogin ? (
-              <form onSubmit={handleLogin}>
-                <div className="mb-4">
-                  <label className="block mb-1 font-medium">Email</label>
-                  <input
-                    type="email"
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
-                    required
-                  />
-                </div>
-                <div className="mb-6">
-                  <label className="block mb-1 font-medium">Password</label>
-                  <input
-                    type="password"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
-                    required
-                  />
-                </div>
-                <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition">
-                  Login
-                </button>
-              </form>
-            ) : (
-              <form onSubmit={handleRegister}>
-                <div className="mb-4">
-                  <label className="block mb-1 font-medium">Full Name</label>
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-1 font-medium">Email</label>
-                  <input
-                    type="email"
-                    value={registerEmail}
-                    onChange={(e) => setRegisterEmail(e.target.value)}
-                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
-                    required
-                  />
-                </div>
-                {/* Phone Number with Country Code */}
-                <div className="mb-4">
-                  <label className="block mb-1 font-medium">Phone Number</label>
-                  <div className="flex">
-                    <select
-                      value={countryCode}
-                      onChange={(e) => setCountryCode(e.target.value)}
-                      className="border border-gray-300 p-1 text-sm rounded-l focus:outline-none focus:ring focus:border-blue-500 w-24"
-                      required
-                    >
-                      <option value="+93">+93 (Afghanistan)</option>
+                        <div className="register-form">
+                            <form onSubmit={handleRegister}>
+                                <div className="mb-4">
+                                    <label className="block mb-1 font-medium">Full Name</label>
+                                    <input
+                                        type="text"
+                                        value={fullName}
+                                        onChange={(e) => setFullName(e.target.value)}
+                                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block mb-1 font-medium">Email</label>
+                                    <input
+                                        type="email"
+                                        value={registerEmail}
+                                        onChange={(e) => setRegisterEmail(e.target.value)}
+                                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block mb-1 font-medium">Phone Number</label>
+                                    <div className="flex">
+                                        <select
+                                            value={countryCode}
+                                            onChange={(e) => setCountryCode(e.target.value)}
+                                            className="border border-gray-300 p-1 text-sm rounded-l focus:outline-none focus:ring focus:border-blue-500 w-24"
+                                            required
+                                        >
+                                           <option value="+93">+93 (Afghanistan)</option>
                         <option value="+355">+355 (Albania)</option>
                         <option value="+213">+213 (Algeria)</option>
                         <option value="+376">+376 (Andorra)</option>
@@ -431,49 +478,46 @@ const AuthForm = () => {
                         <option value="+967">+967 (Yemen)</option>
                         <option value="+260">+260 (Zambia)</option>
                         <option value="+263">+263 (Zimbabwe)</option>
-
-                      
-                      {/* Add more options as needed */}
-                    </select>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="flex-1 border border-gray-300 p-2 rounded-r focus:outline-none focus:ring focus:border-blue-500"
-                      required
-                    />
-                  </div>
+                                        </select>
+                                        <input
+                                            type="tel"
+                                            value={phone}
+                                            onChange={(e) => setPhone(e.target.value)}
+                                            className="flex-1 border border-gray-300 p-2 rounded-r focus:outline-none focus:ring focus:border-blue-500"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block mb-1 font-medium">Password</label>
+                                    <input
+                                        type="password"
+                                        value={registerPassword}
+                                        onChange={(e) => setRegisterPassword(e.target.value)}
+                                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-6">
+                                    <label className="block mb-1 font-medium">Re-type Password</label>
+                                    <input
+                                        type="password"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+                                        required
+                                    />
+                                </div>
+                                <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition">
+                                    Register
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div className="mb-4">
-                  <label className="block mb-1 font-medium">Password</label>
-                  <input
-                    type="password"
-                    value={registerPassword}
-                    onChange={(e) => setRegisterPassword(e.target.value)}
-                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
-                    required
-                  />
-                </div>
-                <div className="mb-6">
-                  <label className="block mb-1 font-medium">Re-type Password</label>
-                  <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
-                    required
-                  />
-                </div>
-                <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition">
-                  Register
-                </button>
-              </form>
-            )}
-          </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default AuthForm;

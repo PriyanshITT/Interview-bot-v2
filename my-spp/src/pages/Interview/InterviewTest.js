@@ -82,46 +82,29 @@ const InterviewTest = () => {
         alert("Please select a job role and enter the job description.");
         return;
       }
-      
     }
-
+  
     // Prepare final values
     const finalRole = getFinalValue(role, customRole);
     const finalSkills = getFinalValue(skills, customSkills);
     const finalKnowledgeDomain = getFinalValue(knowledgeDomain, customKnowledgeDomain);
     const finalCompanyName = getFinalValue(companyName, customCompanyName);
-
-    // Example: Prepare data to send to the backend using FormData.
-    const formData = new FormData();
-    formData.append("role", finalRole);
-    formData.append("file", file);
-    formData.append("interviewType", interviewType);
-
-    if (interviewType === "job-role") {
-      formData.append("experience", experience);
-      formData.append("companyName", finalCompanyName);
-      formData.append("skills", finalSkills);
-      formData.append("knowledgeDomain", finalKnowledgeDomain);
-    }
-
-    // Here you would call your backend API endpoint using fetch or axios.
-    // For example:
-    // const endpoint = interviewType === "job-role" ? "/uploadResume" : "/uploadJD";
-    // fetch(endpoint, { method: "POST", body: formData })
-    //   .then(response => response.json())
-    //   .then(data => console.log("Upload successful", data))
-    //   .catch(error => console.error("Upload error:", error));
-
-    // Passing data to the next page (if required)
-    const data = { role: finalRole, jobDescription, interviewType };
-    if (interviewType === "job-role") {
-      data.experience = experience;
-      data.companyName = finalCompanyName;
-      data.skills = finalSkills;
-      data.knowledgeDomain = finalKnowledgeDomain;
-    }
+  
+    // Prepare data to send to the next page
+    const data = {
+      interviewType,
+      role: finalRole,
+      jobDescription,
+      experience,
+      companyName: finalCompanyName,
+      skills: finalSkills,
+      knowledgeDomain: finalKnowledgeDomain,
+      fileName: file ? file.name : "", // Include the file name
+    };
+  
+    // Navigate to the next page with the data and file
     const destination = interviewType === "job-role" ? "/job-role-interview" : "/job-description-interview";
-    navigate(destination, { state: data });
+    navigate(destination, { state: { ...data, file } });
   };
 
   return (

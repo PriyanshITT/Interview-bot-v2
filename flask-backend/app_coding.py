@@ -23,6 +23,9 @@ CORS(app, resources={
 # Global session storage
 sessions = {}
 
+llm = ChatGroq(groq_api_key='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', model_name="llama-3.3-70b-versatile")
+
+
 @app.route('/start_interview', methods=['POST'])
 def start_interview():
     skills = request.form.get('skills')
@@ -49,7 +52,7 @@ def start_interview():
         ("human", "{input}")
     ])
     
-    llm = ChatGroq(groq_api_key='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', model_name="llama-3.3-70b-versatile")
+    
     question_chain = RunnableSequence(question_prompt | llm)
     
     conversational_chain = RunnableWithMessageHistory(
@@ -66,7 +69,8 @@ def start_interview():
             "experience": experience,
             "interview_type": interview_type,
             "level": level
-        }
+        },
+        "responses": []
     }
 
     try:
@@ -82,6 +86,7 @@ def start_interview():
         )
         
         first_question = response.content if hasattr(response, 'content') else 'No question generated.'
+        sessions[session_id]["details"]["last_question"] = first_question
         return jsonify({"question": first_question, "session_id": session_id})
     
     except Exception as e:
@@ -92,6 +97,7 @@ def next_question():
     data = request.get_json()
     session_id = data.get('session_id')
     user_answer = data.get('user_answer')
+    final_flag = data.get('final', False)
 
     if not session_id or not user_answer:
         return jsonify({"error": "Session ID and user answer are required."}), 400
@@ -102,6 +108,16 @@ def next_question():
 
     conversational_chain = session_data["chain"]
     details = session_data["details"]
+
+    # Save the user's response with the last asked question.
+    session_data["responses"].append({
+        "question": details.get("last_question", "Unknown question"),
+        "answer": user_answer
+    })
+
+    if final_flag:
+        # If final_flag is true, simply return a confirmation message.
+        return jsonify({"message": "Final answer recorded.", "session_id": session_id})
 
     try:
         response = conversational_chain.invoke(
@@ -116,10 +132,89 @@ def next_question():
         )
 
         next_question_text = response.content if hasattr(response, 'content') else 'No next question generated.'
+        sessions[session_id]["details"]["last_question"] = next_question_text
         return jsonify({"question": next_question_text, "session_id": session_id})
     
     except Exception as e:
         return jsonify({"error": f"Error generating next question: {str(e)}"}), 500
+
+@app.route('/finish_interview', methods=['POST'])
+def finish_interview():
+    data = request.get_json()
+    session_id = data.get('session_id')
+    if not session_id:
+        return jsonify({"error": "Session ID is required."}), 400
+
+    session_data = sessions.get(session_id)
+    if not session_data:
+        return jsonify({"error": "Invalid session ID."}), 400
+
+    responses = session_data.get("responses", [])
+    if not responses:
+        return jsonify({"error": "No responses recorded."}), 400
+
+    marks_detail = []
+    total_score = 0
+    max_total = 5 * len(responses)  # each question is out of 5
+
+    for item in responses:
+        question = item.get("question")
+        answer = item.get("answer")
+
+        # Prompt to evaluate the user's answer and provide a score
+        grading_prompt = f"""
+        You are an AI evaluator. Evaluate the following answer for the given interview question.
+        Question: {question}
+        Answer: {answer}
+        Provide a score out of 5 based on accuracy, depth, and clarity. Respond with only the number.
+        """
+        try:
+            grade_response = llm.invoke(grading_prompt)
+            score_str = grade_response.content.strip() if hasattr(grade_response, 'content') else "0"
+            try:
+                score = float(score_str)
+            except ValueError:
+                score = 0
+        except Exception as e:
+            score = 0
+            
+        correct_answer_prompt = f"""
+        You are an expert programmer. Write the complete, fully executable code solution for the following problem in the appropriate programming language.
+        Your solution must include every necessary detail such as all imports, functions, and any required main entry point.
+        Ensure the code has proper syntax and indentation, and that it runs without errors. Do not ask for any user input; instead, include any necessary hard-coded values so that the code executes independently.
+        Provide only the code as your answer, with no additional explanation.
+        Question: {question}
+        Respond with only the answer, no additional explanation.
+        """
+
+        try:
+            correct_answer_response = llm.invoke(correct_answer_prompt)
+            correct_answer = correct_answer_response.content if hasattr(correct_answer_response, 'content') else "Unable to generate correct answer."
+            print(correct_answer)
+        except Exception as e:
+            correct_answer = "Error generating correct answer."
+
+        marks_detail.append({
+            "question": question,
+            "answer": answer,
+            "correct_answer": correct_answer,
+            "score": score,
+            "max_score": 5
+        })
+        total_score += score
+
+    passing_threshold = 0.4 * max_total
+    result = "Pass" if total_score >= passing_threshold else "Fail"
+    recommendations = "Review the areas where your responses scored lower. Practice problem solving and review key technical concepts."
+
+    report = {
+        "marks_detail": marks_detail,
+        "total_score": total_score,
+        "max_score": max_total,
+        "result": result,
+        "recommendations": recommendations
+    }
+    return jsonify(report)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5052)

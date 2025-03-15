@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 import chromadb.api
 import os
+import json
 import shutil
 import PyPDF2
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
@@ -20,10 +21,12 @@ import uuid
 import requests
 from datetime import datetime
 from flask_cors import CORS
+import traceback
+import re
 
 # Initialize Flask app
 app = Flask(__name__)
-os.environ["GROQ_API_KEY"] = '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'
+os.environ["GROQ_API_KEY"] = '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'
 
 # Allow requests from specified origins
 CORS(app, resources={
@@ -280,22 +283,27 @@ def next_question():
             raise ValueError("Invalid marks value.")
     except Exception as e:
         return jsonify({"error": f"Error evaluating answer: {str(e)}"}), 500
-
+    print(question)
+    print(user_answer)
+    print(marks)
+    print(timestamp)
+    print(user_id)
+    print(username)
     # Store the evaluation result
-    # api_url = f"https://interviewbot.intraintech.com/api/api/question-answers/add/userid/{user_id}/username/{username}"
-    # payload = {
-    #     "question": question,
-    #     "answer": user_answer,
-    #     "marks": marks,
-    #     "timestamp": timestamp
-    # }
+    api_url = f"https://interviewbot.intraintech.com/api/api/question-answers/add/userid/{user_id}/username/{username}"
+    payload = {
+        "question": question,
+        "answer": user_answer,
+        "marks": marks,
+        "timestamp": timestamp
+    }
 
-    # try:
-    #     response = requests.post(api_url, json=payload)
-    #     if response.status_code != 200:
-    #         return jsonify({"error": f"Failed to store data: {response.status_code} {response.text}"}), 500
-    # except Exception as e:
-    #     return jsonify({"error": f"Error storing data: {str(e)}"}), 500
+    try:
+        response = requests.post(api_url, json=payload)
+        if response.status_code != 200:
+            return jsonify({"error": f"Failed to store data: {response.status_code} {response.text}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Error storing data: {str(e)}"}), 500
 
     # Generate the next question
     try:
@@ -319,6 +327,170 @@ def next_question():
 
     except Exception as e:
         return jsonify({"error": f"Error generating next question: {str(e)}"}), 500
+
+@app.route('/ats_score', methods=['POST'])
+def ats_score():
+    try:
+        # Validate resume file
+        if 'resume' not in request.files:
+            return jsonify({"error": "No resume file provided."}), 400
+
+        resume = request.files['resume']
+        if resume.filename == '' or not resume.filename.lower().endswith('.pdf'):
+            return jsonify({"error": "Invalid file type. Please upload a PDF."}), 400
+
+        job_description = request.form.get('job_description')
+        if not job_description:
+            return jsonify({"error": "Job description is required."}), 400
+
+        # Save the resume temporarily
+        filename = secure_filename(resume.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        resume.save(filepath)
+
+        # Extract text from PDF
+        try:
+            with open(filepath, 'rb') as file:
+                reader = PyPDF2.PdfReader(file)
+                resume_text = " ".join(page.extract_text() for page in reader.pages if page.extract_text())
+        except Exception as e:
+            return jsonify({"error": f"Error processing PDF: {str(e)}"}), 500
+
+        # Initialize LLM
+        llm = ChatGroq(
+            groq_api_key=os.getenv('GROQ_API_KEY'),
+            model_name="gemma2-9b-it"
+        )
+
+        # ATS Score Prompt (only calculates score)
+        ats_score_prompt = f"""
+        You are an AI that evaluates resumes against job descriptions and provides an ATS score out of 100.
+
+        ### Evaluation Criteria:
+        1. Compare the resume content with the job description.
+        2. Assess the relevance of skills, experience, keywords, and overall alignment with the job role.
+        3. Provide a score from 0 to 100 based on how well the resume matches the job description.
+        4. Higher scores indicate a better fit for the role.
+
+        ### Input:
+        **Job Description:**
+        {job_description}
+
+        **Resume Content:**
+        {resume_text}
+
+        ### Output (JSON format):
+        Provide only the following JSON object with no additional text:
+        {{
+            "ats_score": <integer from 0 to 100>
+        }}
+        """
+
+        try:
+            ats_response = llm.invoke(ats_score_prompt)
+            response_text = ats_response.content.strip()
+
+            # Extract JSON using regex to handle extra text
+            json_match = re.search(r'\{.*?\}', response_text, re.DOTALL)
+            if not json_match:
+                raise ValueError("No valid JSON found in LLM response")
+
+            json_text = json_match.group(0)
+            ats_response_json = json.loads(json_text)
+            ats_score = int(ats_response_json.get("ats_score", 0))
+
+            if not 0 <= ats_score <= 100:
+                raise ValueError("Invalid ATS score value.")
+
+        except json.JSONDecodeError as e:
+            traceback.print_exc()
+            return jsonify({"error": f"Failed to parse AI response: {str(e)}. Raw response: {response_text}"}), 500
+        except Exception as e:
+            traceback.print_exc()
+            return jsonify({"error": f"Error generating ATS score: {str(e)}. Raw response: {response_text}"}), 500
+
+        # Store resume text and job description in session-like storage
+        session_id = request.form.get('session_id', os.urandom(16).hex())
+        app.config['sessions'] = getattr(app.config, 'sessions', {})
+        app.config['sessions'][session_id] = {
+            "resume_text": resume_text,
+            "job_description": job_description
+        }
+
+        return jsonify({"ats_score": ats_score, "session_id": session_id})
+
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
+
+@app.route('/get_recommendations', methods=['POST'])
+def get_recommendations():
+    try:
+        data = request.get_json()
+        session_id = data.get('session_id')
+
+        if not session_id or session_id not in app.config.get('sessions', {}):
+            return jsonify({"error": "Invalid or missing session ID."}), 400
+
+        session_data = app.config['sessions'][session_id]
+        resume_text = session_data["resume_text"]
+        job_description = session_data["job_description"]
+
+        # Initialize LLM
+        llm = ChatGroq(
+            groq_api_key=os.getenv('GROQ_API_KEY'),
+            model_name="gemma2-9b-it"
+        )
+
+        # Recommendations Prompt (only generates suggestions)
+        recommendations_prompt = f"""
+        You are an AI that provides specific recommendations to improve a resume based on a job description.
+
+        ### Evaluation Criteria:
+        1. Compare the resume content with the job description.
+        2. Identify gaps in skills, experience, keywords, or alignment with the job role.
+        3. Provide **specific recommendations** to improve the resume.
+
+        ### Input:
+        **Job Description:**
+        {job_description}
+
+        **Resume Content:**
+        {resume_text}
+
+        ### Output (JSON format):
+        Provide only the following JSON object with no additional text:
+        {{
+            "improvement_suggestions": ["Suggestion 1", "Suggestion 2", "Suggestion 3"]
+        }}
+        """
+
+        try:
+            rec_response = llm.invoke(recommendations_prompt)
+            response_text = rec_response.content.strip()
+
+            # Extract JSON using regex to handle extra text
+            json_match = re.search(r'\{.*?\}', response_text, re.DOTALL)
+            if not json_match:
+                raise ValueError("No valid JSON found in LLM response")
+
+            json_text = json_match.group(0)
+            rec_response_json = json.loads(json_text)
+            improvement_suggestions = rec_response_json.get("improvement_suggestions", [])
+
+        except json.JSONDecodeError as e:
+            traceback.print_exc()
+            return jsonify({"error": f"Failed to parse AI response: {str(e)}. Raw response: {response_text}"}), 500
+        except Exception as e:
+            traceback.print_exc()
+            return jsonify({"error": f"Error generating recommendations: {str(e)}. Raw response: {response_text}"}), 500
+
+        return jsonify({"improvement_suggestions": improvement_suggestions})
+
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
+
 
 # Run the app
 if __name__ == '__main__':
