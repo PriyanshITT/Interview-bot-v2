@@ -9,22 +9,16 @@ const InterviewTest = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [interviewType, setInterviewType] = useState(null);
   const [role, setRole] = useState("");
-  const [customRole, setCustomRole] = useState(""); // for Role "Other"
+  const [customRole, setCustomRole] = useState("");
   const [file, setFile] = useState(null);
   const [jobDescription, setJobDescription] = useState("");
 
   // Additional fields for job-role based interview
   const [experience, setExperience] = useState("");
-  
-  // Company Name dropdown with "Other" option
   const [companyName, setCompanyName] = useState("");
   const [customCompanyName, setCustomCompanyName] = useState("");
-  
-  // Skills dropdown with "Other" option
   const [skills, setSkills] = useState("");
   const [customSkills, setCustomSkills] = useState("");
-  
-  // Knowledge Domain dropdown with "Other" option
   const [knowledgeDomain, setKnowledgeDomain] = useState("");
   const [customKnowledgeDomain, setCustomKnowledgeDomain] = useState("");
 
@@ -47,6 +41,7 @@ const InterviewTest = () => {
     setCustomSkills("");
     setKnowledgeDomain("");
     setCustomKnowledgeDomain("");
+    setJobDescription("");
   };
 
   // Handle file upload
@@ -83,14 +78,12 @@ const InterviewTest = () => {
         return;
       }
     }
-  
-    // Prepare final values
+
     const finalRole = getFinalValue(role, customRole);
     const finalSkills = getFinalValue(skills, customSkills);
     const finalKnowledgeDomain = getFinalValue(knowledgeDomain, customKnowledgeDomain);
     const finalCompanyName = getFinalValue(companyName, customCompanyName);
-  
-    // Prepare data to send to the next page
+
     const data = {
       interviewType,
       role: finalRole,
@@ -99,10 +92,9 @@ const InterviewTest = () => {
       companyName: finalCompanyName,
       skills: finalSkills,
       knowledgeDomain: finalKnowledgeDomain,
-      fileName: file ? file.name : "", // Include the file name
+      fileName: file ? file.name : "",
     };
-  
-    // Navigate to the next page with the data and file
+
     const destination = interviewType === "job-role" ? "/job-role-interview" : "/job-description-interview";
     navigate(destination, { state: { ...data, file } });
   };
@@ -159,163 +151,165 @@ const InterviewTest = () => {
       {/* Modal for Form */}
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full">
             <h2 className="text-xl font-semibold mb-4">
               {interviewType === "job-role"
                 ? "Job Role Interview Details"
                 : "Job Description Interview Details"}
             </h2>
 
-            {interviewType === "job-role" ? (
-              <>
-                {/* Experience */}
-                <label className="block text-gray-700">Experience</label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded-md mb-3"
-                  value={experience}
-                  onChange={(e) => setExperience(e.target.value)}
-                  placeholder="Enter your experience"
-                />
-
-                {/* Company Name Dropdown */}
-                <label className="block text-gray-700">Company Name</label>
-                <select
-                  className="w-full p-2 border rounded-md mb-3"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                >
-                  <option value="">Select Company Name (Required)</option>
-                  <option value="Google">Google</option>
-                  <option value="Microsoft">Microsoft</option>
-                  <option value="Amazon">Amazon</option>
-                  <option value="Other">Other</option>
-                </select>
-                {companyName === "Other" && (
+            {/* Scrollable Form Container */}
+            <div className="max-h-[400px] overflow-y-auto">
+              {interviewType === "job-role" ? (
+                <>
+                  {/* Experience */}
+                  <label className="block text-gray-700">Experience</label>
                   <input
                     type="text"
                     className="w-full p-2 border rounded-md mb-3"
-                    value={customCompanyName}
-                    onChange={(e) => setCustomCompanyName(e.target.value)}
-                    placeholder="Enter your company name"
+                    value={experience}
+                    onChange={(e) => setExperience(e.target.value)}
+                    placeholder="Enter your experience (e.g., 3 years)"
                   />
-                )}
 
-                {/* Role Dropdown */}
-                <label className="block text-gray-700">Role</label>
-                <select
-                  className="w-full p-2 border rounded-md mb-3"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                >
-                  <option value="">Select your Role (Required)</option>
-                  <option value="Data Scientist">Data Scientist</option>
-                  <option value="Software Engineer">Software Engineer</option>
-                  <option value="AI Specialist">AI Specialist</option>
-                  <option value="Other">Other</option>
-                </select>
-                {role === "Other" && (
-                  <input
-                    type="text"
+                  {/* Company Name Dropdown */}
+                  <label className="block text-gray-700">Company Name</label>
+                  <select
                     className="w-full p-2 border rounded-md mb-3"
-                    value={customRole}
-                    onChange={(e) => setCustomRole(e.target.value)}
-                    placeholder="Enter your role"
-                  />
-                )}
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                  >
+                    <option value="">Select Company Name (Required)</option>
+                    <option value="Google">Google</option>
+                    <option value="Microsoft">Microsoft</option>
+                    <option value="Amazon">Amazon</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {companyName === "Other" && (
+                    <input
+                      type="text"
+                      className="w-full p-2 border rounded-md mb-3"
+                      value={customCompanyName}
+                      onChange={(e) => setCustomCompanyName(e.target.value)}
+                      placeholder="Enter your company name"
+                    />
+                  )}
 
-                {/* Skills Dropdown */}
-                <label className="block text-gray-700">Skills</label>
-                <select
-                  className="w-full p-2 border rounded-md mb-3"
-                  value={skills}
-                  onChange={(e) => setSkills(e.target.value)}
-                >
-                  <option value="">Select a skill (Required)</option>
-                  <option value="Machine Learning">Machine Learning</option>
-                  <option value="Data Engineering">Data Engineering</option>
-                  <option value="Cloud Computing">Cloud Computing</option>
-                  <option value="Other">Other</option>
-                </select>
-                {skills === "Other" && (
-                  <input
-                    type="text"
+                  {/* Role Dropdown */}
+                  <label className="block text-gray-700">Role</label>
+                  <select
                     className="w-full p-2 border rounded-md mb-3"
-                    value={customSkills}
-                    onChange={(e) => setCustomSkills(e.target.value)}
-                    placeholder="Enter your skill"
-                  />
-                )}
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                  >
+                    <option value="">Select your Role (Required)</option>
+                    <option value="Data Scientist">Data Scientist</option>
+                    <option value="Software Engineer">Software Engineer</option>
+                    <option value="AI Specialist">AI Specialist</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {role === "Other" && (
+                    <input
+                      type="text"
+                      className="w-full p-2 border rounded-md mb-3"
+                      value={customRole}
+                      onChange={(e) => setCustomRole(e.target.value)}
+                      placeholder="Enter your role"
+                    />
+                  )}
 
-                {/* Knowledge Domain Dropdown */}
-                <label className="block text-gray-700">Knowledge Domain</label>
-                <select
-                  className="w-full p-2 border rounded-md mb-3"
-                  value={knowledgeDomain}
-                  onChange={(e) => setKnowledgeDomain(e.target.value)}
-                >
-                  <option value="">Select a domain (Required)</option>
-                  <option value="Computer Vision">Computer Vision</option>
-                  <option value="NLP">NLP</option>
-                  <option value="Big Data">Big Data</option>
-                  <option value="Other">Other</option>
-                </select>
-                {knowledgeDomain === "Other" && (
-                  <input
-                    type="text"
+                  {/* Skills Dropdown */}
+                  <label className="block text-gray-700">Skills</label>
+                  <select
                     className="w-full p-2 border rounded-md mb-3"
-                    value={customKnowledgeDomain}
-                    onChange={(e) => setCustomKnowledgeDomain(e.target.value)}
-                    placeholder="Enter your domain"
-                  />
-                )}
+                    value={skills}
+                    onChange={(e) => setSkills(e.target.value)}
+                  >
+                    <option value="">Select a skill (Required)</option>
+                    <option value="Machine Learning">Machine Learning</option>
+                    <option value="Data Engineering">Data Engineering</option>
+                    <option value="Cloud Computing">Cloud Computing</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {skills === "Other" && (
+                    <input
+                      type="text"
+                      className="w-full p-2 border rounded-md mb-3"
+                      value={customSkills}
+                      onChange={(e) => setCustomSkills(e.target.value)}
+                      placeholder="Enter your skill"
+                    />
+                  )}
 
-                {/* File Upload for Resume */}
-                <label className="block text-gray-700">Upload Resume</label>
-                <input
-                  type="file"
-                  className="w-full p-2 border rounded-md mb-3"
-                  onChange={handleFileUpload}
-                />
-              </>
-            ) : (
-              <>
-                {/* For Job Description Interview */}
-                <label className="block text-gray-700">Job Role</label>
-                <select
-                  className="w-full p-2 border rounded-md mb-3"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                >
-                  <option value="">Select Job Role (Required)</option>
-                  <option value="Data Scientist">Data Scientist</option>
-                  <option value="Software Engineer">Software Engineer</option>
-                  <option value="AI Specialist">AI Specialist</option>
-                  <option value="Other">Other</option>
-                </select>
-
-                {role === "Other" && (
-                  <input
-                    type="text"
+                  {/* Knowledge Domain Dropdown */}
+                  <label className="block text-gray-700">Knowledge Domain</label>
+                  <select
                     className="w-full p-2 border rounded-md mb-3"
-                    value={customRole}
-                    onChange={(e) => setCustomRole(e.target.value)}
-                    placeholder="Enter your role"
+                    value={knowledgeDomain}
+                    onChange={(e) => setKnowledgeDomain(e.target.value)}
+                  >
+                    <option value="">Select a domain (Required)</option>
+                    <option value="Computer Vision">Computer Vision</option>
+                    <option value="NLP">NLP</option>
+                    <option value="Big Data">Big Data</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {knowledgeDomain === "Other" && (
+                    <input
+                      type="text"
+                      className="w-full p-2 border rounded-md mb-3"
+                      value={customKnowledgeDomain}
+                      onChange={(e) => setCustomKnowledgeDomain(e.target.value)}
+                      placeholder="Enter your domain"
+                    />
+                  )}
+
+                  {/* File Upload for Resume */}
+                  <label className="block text-gray-700">Upload Resume</label>
+                  <input
+                    type="file"
+                    className="w-full p-2 border rounded-md mb-3"
+                    onChange={handleFileUpload}
                   />
-                )}
+                </>
+              ) : (
+                <>
+                  {/* For Job Description Interview */}
+                  <label className="block text-gray-700">Job Role</label>
+                  <select
+                    className="w-full p-2 border rounded-md mb-3"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                  >
+                    <option value="">Select Job Role (Required)</option>
+                    <option value="Data Scientist">Data Scientist</option>
+                    <option value="Software Engineer">Software Engineer</option>
+                    <option value="AI Specialist">AI Specialist</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {role === "Other" && (
+                    <input
+                      type="text"
+                      className="w-full p-2 border rounded-md mb-3"
+                      value={customRole}
+                      onChange={(e) => setCustomRole(e.target.value)}
+                      placeholder="Enter your role"
+                    />
+                  )}
 
-                {/* Job Description Input Field */}
-                <label className="block text-gray-700">Job Description</label>
-                <textarea
-                  className="w-full p-2 border rounded-md mb-3 h-32"
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                  placeholder="Enter job description here"
-                ></textarea>
-              </>
+                  {/* Job Description Input Field */}
+                  <label className="block text-gray-700">Job Description</label>
+                  <textarea
+                    className="w-full p-2 border rounded-md mb-3 h-32"
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
+                    placeholder="Enter job description here"
+                  ></textarea>
+                </>
+              )}
+            </div>
 
-            )}
-
+            {/* Buttons */}
             <div className="flex justify-end space-x-2 mt-4">
               <button className="px-4 py-2 bg-gray-300 rounded-md" onClick={closeModal}>
                 Cancel

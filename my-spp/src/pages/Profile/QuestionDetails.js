@@ -1,3 +1,4 @@
+// QuestionDetails.js
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 
@@ -46,7 +47,7 @@ const QuestionDetails = ({ date, questions, onClose }) => {
                                 >
                                     <td className="px-6 py-4">{q.question}</td>
                                     <td className="px-6 py-4">{q.answer}</td>
-                                    <td className="px-6 py-4">{q.marks}</td>
+                                    <td className="px-6 py-4">{`${q.marks}/10`}</td>
                                 </tr>
                             ))}
                         </tbody>

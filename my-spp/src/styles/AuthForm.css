@@ -23,15 +23,41 @@
     overflow-y: scroll; /* Enable scrolling */
 }
 
+/* Remove or comment out the scrollbar hiding rules */
 /* Hide scrollbar for Chrome, Safari, and Opera */
-.auth-form .register-form::-webkit-scrollbar {
+/* .auth-form .register-form::-webkit-scrollbar {
     display: none;
-}
+} */
 
 /* Hide scrollbar for IE, Edge, and Firefox */
+/* .auth-form .register-form {
+    -ms-overflow-style: none;  IE and Edge
+    scrollbar-width: none;  Firefox
+} */
+
+/* Optional: Customize the scrollbar for better visibility (Webkit browsers) */
+.auth-form .register-form::-webkit-scrollbar {
+    width: 4px; /* Width of the scrollbar */
+}
+
+.auth-form .register-form::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Track color */
+    border-radius: 4px;
+}
+
+.auth-form .register-form::-webkit-scrollbar-thumb {
+    background: #3b82f6; /* Blue thumb color */
+    border-radius: 4px;
+}
+
+.auth-form .register-form::-webkit-scrollbar-thumb:hover {
+    background: #2563eb; /* Darker blue on hover */
+}
+
+/* For Firefox, you can set scrollbar-width and scrollbar-color */
 .auth-form .register-form {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    scrollbar-width: thin; /* Makes scrollbar visible but thinner */
+    scrollbar-color: #3b82f6 #f1f1f1; /* Thumb color and track color */
 }
 
 .auth-form.active-register .login-form {
@@ -73,7 +99,7 @@
 }
 
 /* Form input styling */
-.auth-form input{
+.auth-form input {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -82,6 +108,7 @@
     font-size: 14px;
     transition: border-color 0.3s ease;
 }
+
 .auth-form select {
     width: 30%;
     padding: 10px;

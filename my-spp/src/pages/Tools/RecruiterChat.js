@@ -10,9 +10,9 @@ export default function ResumeBuilder() {
       style={{
         backgroundImage:
           "url('https://t4.ftcdn.net/jpg/04/39/69/99/360_F_439699926_GkaQTcxPchsvvtdrZ98cFQh1a8HQICwP.jpg')",
-        backgroundRepeat: "no-repeat", // Prevents repeating
-        backgroundSize: "cover", // Stretches image to cover the whole div
-        backgroundPosition: "center", // Centers the image
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -31,9 +31,7 @@ export default function ResumeBuilder() {
               </p>
             </div>
             <div className="flex items-center justify-center">
-              {/* Human Icon: enlarged and perfectly centered */}
               <span className="text-8xl">👤</span>
-              
             </div>
             <div className="w-full text-center mb-4">
               <span className="text-lg font-semibold text-white">
@@ -42,7 +40,7 @@ export default function ResumeBuilder() {
             </div>
           </div>
         </div>
-
+        
         {/* AI Recruiter Page Card */}
         <div
           className="relative w-80 h-96 p-6 bg-white/20 backdrop-blur-lg rounded-2xl shadow-xl border border-white/30 cursor-pointer transition-transform transform hover:scale-105 hover:shadow-2xl"
@@ -58,7 +56,6 @@ export default function ResumeBuilder() {
               </p>
             </div>
             <div className="flex items-center justify-center">
-              {/* AI Icon using the provided URL */}
               <img
                 src="https://www.iconshock.com/image/RealVista/Development/chat_bot"
                 alt="AI Chat Bot Icon"

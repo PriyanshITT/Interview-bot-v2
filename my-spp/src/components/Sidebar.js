@@ -63,7 +63,7 @@ const Sidebar = ({ toggleSidebar }) => {
         <li className={location.pathname === "/resume-builder" ? "active-btn" : ""}>
           <Link to="/resume-builder">
             <FaFileAlt className="icon" />
-            <span className={collapsed ? "hidden" : ""}>Resume Builder</span>
+            <span className={collapsed ? "hidden" : ""}>ATS Score</span>
           </Link>
         </li>
         <li className={location.pathname === "/recruiter-chat" ? "active-btn" : ""}>

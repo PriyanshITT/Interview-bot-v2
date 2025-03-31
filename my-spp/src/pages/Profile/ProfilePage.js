@@ -1,3 +1,4 @@
+// ProfilePage.js
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaUserCircle } from "react-icons/fa";
@@ -8,6 +9,7 @@ import '../../styles/ProfilePage.css'
 const ProfilePage = ({ isSidebarCollapsed }) => {
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState(null);
+    const [totalPossibleMarks, setTotalPossibleMarks] = useState(0);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -16,6 +18,14 @@ const ProfilePage = ({ isSidebarCollapsed }) => {
                 const response = await makeAuthenticatedRequest(
                     `/api/profile/get/id/${userId}`
                 );
+                
+                // Fetch total questions attempted to calculate maximum possible marks
+                const questionResponse = await makeAuthenticatedRequest(
+                    `/api/question-answers/get-sorted/${userId}`
+                );
+                const totalQuestions = questionResponse.length;
+                setTotalPossibleMarks(totalQuestions * 10);
+                
                 setProfile(response);
                 setLoading(false);
             } catch (error) {
@@ -56,7 +66,7 @@ const ProfilePage = ({ isSidebarCollapsed }) => {
                             </div>
                         </div>
                         <div className="profile-details">
-                            <h3>Total Marks Obtained: <span>{profile?.totalMarks}</span></h3>
+                            <h3>Total Marks Obtained: <span>{`${profile?.totalMarks}/${totalPossibleMarks}`}</span></h3>
                         </div>
                         <div className="test-summary">
                             <h2>Test Summary</h2>

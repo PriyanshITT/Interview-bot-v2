@@ -570,7 +570,7 @@ const speakText = (text, selectedAvatarIndex) => {
                     msg.sender === "user" ? "bg-indigo-500 text-white" : "bg-gray-200 text-gray-800"
                   } whitespace-pre-wrap`}
                 >
-                  {msg.sender === "bot" ? <BotMessage text={msg.text} delay={150} /> : msg.text}
+                  {msg.sender === "bot" ? <BotMessage text={msg.text} delay={15} /> : msg.text}
                 </div>
                 <span className="text-xs text-gray-400 mt-1">{msg.time}</span>
               </div>

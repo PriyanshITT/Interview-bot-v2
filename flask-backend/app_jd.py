@@ -48,7 +48,7 @@ def start_interview():
         ("human", "{input}")
     ])
     
-    llm = ChatGroq(groq_api_key='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', model_name="llama-3.3-70b-versatile")
+    llm = ChatGroq(groq_api_key='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', model_name="gemma2-9b-it")
     question_chain = RunnableSequence(question_prompt | llm)
     
     conversational_chain = RunnableWithMessageHistory(

@@ -1,3 +1,4 @@
+// DateSummary.js
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import QuestionDetails from './QuestionDetails';
@@ -48,6 +49,7 @@ const DateSummary = ({ data }) => {
                         {Object.keys(groupedData).map((date) => {
                             const questions = groupedData[date];
                             const totalMarks = questions.reduce((sum, q) => sum + q.marks, 0);
+                            const maxMarks = questions.length * 10; // Maximum possible marks (10 per question)
                             const result = getResult(totalMarks, questions.length);
 
                             return (
@@ -57,7 +59,7 @@ const DateSummary = ({ data }) => {
                                 >
                                     <td className="px-6 py-4">{date}</td>
                                     <td className="px-6 py-4">{questions.length}</td>
-                                    <td className="px-6 py-4">{totalMarks}</td>
+                                    <td className="px-6 py-4">{`${totalMarks}/${maxMarks}`}</td>
                                     <td className="px-6 py-4">{result}</td>
                                     <td className="px-6 py-4">
                                         <motion.button

@@ -26,7 +26,7 @@ import re
 
 # Initialize Flask app
 app = Flask(__name__)
-os.environ["GROQ_API_KEY"] = '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'
+os.environ["GROQ_API_KEY"] = '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'
 
 # Allow requests from specified origins
 CORS(app, resources={
@@ -259,6 +259,7 @@ def next_question():
     - If the answer is relevant but not perfect, return an integer between 1 and 10 based on how well it aligns with the context, job role, and candidate experience.
 
     Your response must strictly be a single integer value from 0 to 10.
+    If the Answer is totally irrelevant and out of context just give a integer value 0.
     """
     
     #evaluation mark template

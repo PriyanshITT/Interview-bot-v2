@@ -325,7 +325,7 @@ const StartGeneralInterview = () => {
           <div className="flex flex-col items-center">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Please select the number of questions</h2>
             <div className="flex space-x-4 mb-8">
-              {[15, 25, 40].map((count) => (
+              {[5, 10, 15].map((count) => (
                 <button
                   key={count}
                   onClick={() => setSelectedQuestionCount(count)}
@@ -394,7 +394,7 @@ const StartGeneralInterview = () => {
             {messages.map((msg, idx) => (
               <div key={idx} className={`mb-3 flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"}`}>
                 <div className={`px-4 py-2 rounded-lg max-w-md text-sm ${msg.sender === "user" ? "bg-indigo-500 text-white" : "bg-gray-200 text-gray-800"} whitespace-pre-wrap`}>
-                  {msg.sender === "bot" ? <BotMessage text={msg.text} delay={150} /> : msg.text}
+                  {msg.sender === "bot" ? <BotMessage text={msg.text} delay={15} /> : msg.text}
                 </div>
                 <span className="text-xs text-gray-400 mt-1">{msg.time}</span>
               </div>

@@ -23,7 +23,7 @@ CORS(app, resources={
 # Global session storage
 sessions = {}
 
-llm = ChatGroq(groq_api_key='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', model_name="llama-3.3-70b-versatile")
+llm = ChatGroq(groq_api_key='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', model_name="llama-3.3-70b-versatile")
 
 
 @app.route('/start_interview', methods=['POST'])

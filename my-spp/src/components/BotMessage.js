@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from "react";
 
-const BotMessage = ({ text, delay = 300 }) => {
+const BotMessage = ({ text, delay = 0.01 }) => {
   const [displayedText, setDisplayedText] = useState("");
 
   useEffect(() => {
-    // Reset the displayed text each time text changes.
-    setDisplayedText("");
-    const words = text.split(" ");
-    let index = 0;
-    const interval = setInterval(() => {
-      // Check to ensure we're not accessing an undefined word.
-      if (index < words.length-1) {
-        setDisplayedText((prev) => (prev ? prev + " " : "") + words[index]);
-        index++;
-      } else {
-        clearInterval(interval);
-      }
-    }, delay);
+    setDisplayedText(""); // Reset when text changes
+    let currentIndex = 0;
+    let animationFrameId;
 
-    return () => clearInterval(interval);
+    const typeCharacter = () => {
+      if (currentIndex < text.length) {
+        setDisplayedText(text.substring(0, currentIndex + 1));
+        currentIndex++;
+        animationFrameId = requestAnimationFrame(() => setTimeout(typeCharacter, delay));
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(() => setTimeout(typeCharacter, delay));
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
   }, [text, delay]);
 
   return <span>{displayedText}</span>;
