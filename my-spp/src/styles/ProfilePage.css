@@ -1,13 +1,16 @@
+/* ProfilePage.css */
+
 /* Base Container */
 .profile-container {
     min-height: 100vh;
+    width: 100%;
     background: linear-gradient(to bottom right, #9ad0f5, #b89cf1, #f1a7c5);
-    padding: 20px;
+    padding: 0.5rem; /* Base padding for mobile */
     transition: margin-left 0.3s ease-in-out;
 }
 
 .profile-container.expanded {
-    margin-left: 100px; /* Adjust when sidebar is collapsed */
+    margin-left: 0; /* Default for mobile */
 }
 
 /* Loading */
@@ -16,91 +19,71 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-}
-
-.loading-spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid white;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    100% {
-        transform: rotate(360deg);
-    }
+    min-height: 80vh;
+    gap: 1rem;
 }
 
 /* Profile Content */
 .profile-content {
-    max-width: 1200px;
-    margin: auto;
-    padding: 20px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0.5rem;
 }
 
 /* Profile Card */
 .profile-card {
     background: white;
     border-radius: 12px;
-    padding: 20px;
+    padding: 0.75rem;
     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1rem;
 }
 
 /* Profile Header */
 .profile-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    background-color: #f8f9fa; /* Light gray background */
-    padding: 15px;
+    flex-direction: column;
+    background-color: #f8f9fa;
+    padding: 0.75rem;
     border-radius: 10px;
-    margin-bottom: 20px;
+    gap: 0.75rem;
 }
 
 /* Profile Info */
 .profile-info {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 0.75rem;
+    text-align: center;
 }
+
 .profile-icon {
-    font-size: 80px;
-    color: #4a90e2; /* Blue color for the user icon */
-}
-
-.profile-info h2 {
-    font-size: 24px;
-    color: #333; /* Dark gray for the name */
-    margin: 0;
-}
-
-.profile-info h3 {
-    font-size: 18px;
-    color: #666; /* Light gray for the username */
-    margin: 0;
+    font-size: 2.5rem; /* Base size for mobile */
+    color: #4a90e2;
 }
 
 /* Profile Actions */
 .profile-actions {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
 }
 
 .btn {
-    padding: 10px 20px;
+    padding: 0.5rem 1rem;
     border-radius: 8px;
     border: none;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    font-size: 14px;
     font-weight: 500;
+    white-space: nowrap;
+    width: 100%;
+    text-align: center;
 }
 
 .change-password {
@@ -115,100 +98,133 @@
 
 .btn:hover {
     transform: scale(1.05);
+    opacity: 0.9;
 }
 
 /* Profile Details */
 .profile-details {
-    font-size: 18px;
-    color: #555; /* Dark gray */
-    background-color: #f8f9fa; /* Light gray background */
-    padding: 15px;
+    background-color: #f8f9fa;
+    padding: 0.75rem;
     border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-.profile-details h3 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.profile-details span {
-    font-weight: bold;
-    font-size: 24px;
-    color: #4a90e2; /* Blue color for the total marks */
 }
 
 /* Test Summary */
 .test-summary {
-    margin-top: 20px;
-    background-color: #f8f9fa; /* Light gray background */
-    padding: 15px;
+    margin-top: 1rem;
+    background-color: #f8f9fa;
+    padding: 0.75rem;
     border-radius: 10px;
 }
 
-.test-summary h2 {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333; /* Dark gray */
-}
-
 /* Responsive Design */
-@media (max-width: 1024px) {
+
+/* Small devices (sm: 640px and up) */
+@media (min-width: 640px) {
     .profile-container {
-        padding: 15px;
+        padding: 0.75rem;
     }
-
+    
+    .profile-content {
+        padding: 0.75rem;
+    }
+    
     .profile-card {
-        padding: 15px;
+        padding: 1rem;
     }
-
+    
     .profile-header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
+        padding: 1rem;
     }
-
-    .profile-actions {
-        margin-top: 10px;
-    }
-}
-
-@media (max-width: 768px) {
-    .profile-container {
-        padding: 10px;
-    }
-
+    
     .profile-info {
-        flex-direction: column;
-        text-align: center;
+        flex-direction: row;
+        text-align: left;
     }
-
+    
+    .profile-actions {
+        flex-direction: row;
+        justify-content: flex-start;
+        width: auto;
+    }
+    
+    .btn {
+        width: auto;
+        padding: 0.625rem 1.25rem;
+    }
+    
     .profile-icon {
-        font-size: 60px;
+        font-size: 3rem;
     }
-
-    .btn {
-        padding: 8px 12px;
+    
+    .profile-details,
+    .test-summary {
+        padding: 1rem;
     }
 }
 
-@media (max-width: 480px) {
-    .profile-card {
-        padding: 10px;
+/* Medium devices (md: 768px and up) */
+@media (min-width: 768px) {
+    .profile-container {
+        padding: 1rem;
     }
-
-    .profile-info {
-        gap: 10px;
+    
+    .profile-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
-
+    
     .profile-actions {
-        flex-direction: column;
-        width: 100%;
+        width: auto;
+        justify-content: flex-end;
     }
+    
+    .profile-icon {
+        font-size: 3.5rem;
+    }
+}
 
+/* Large devices (lg: 1024px and up) */
+@media (min-width: 1024px) {
+    .profile-container {
+        padding: 1.25rem;
+    }
+    
+    .profile-container.expanded {
+        margin-left: 80px; /* Apply sidebar offset only on large screens */
+    }
+    
+    .profile-card {
+        padding: 1.25rem;
+    }
+    
+    .profile-header {
+        padding: 1.25rem;
+    }
+    
+    .profile-details,
+    .test-summary {
+        padding: 1.25rem;
+    }
+    
+    .profile-icon {
+        font-size: 4rem;
+    }
+    
     .btn {
-        width: 100%;
+        padding: 0.625rem 1.25rem;
+        font-size: 1rem;
+    }
+}
+
+/* Extra small devices (below 480px) */
+@media (max-width: 479px) {
+    .profile-icon {
+        font-size: 2rem;
+    }
+    
+    .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
     }
 }

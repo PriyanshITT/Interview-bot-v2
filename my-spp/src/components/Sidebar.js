@@ -1,107 +1,114 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { 
-  FaHome, FaClipboardList, FaUserTie, FaChartBar, 
-  FaChevronLeft, FaChevronRight, FaFileAlt, FaCommentDots, 
-  FaPhone, FaUsers 
+import {
+  FaHome, FaClipboardList, FaUserTie, FaChartBar, FaTimes,
+  FaFileAlt, FaCommentDots, FaPhone, FaClipboardCheck, FaChevronLeft, FaChevronRight
 } from "react-icons/fa";
 import "../styles/Sidebar.css";
 
-const Sidebar = ({ toggleSidebar }) => {
-  const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation(); // Get current route path
+const Sidebar = ({ toggleSidebar, isMobileOpen, setIsMobileOpen, isCollapsed }) => {
+  const location = useLocation();
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setIsMobileOpen(false); // Close mobile sidebar on resize
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [setIsMobileOpen]);
 
   const handleToggle = () => {
-    setCollapsed(!collapsed);
-    toggleSidebar(!collapsed); // Notify parent (App.js) about state change
+    if (window.innerWidth <= 768) {
+      setIsMobileOpen(!isMobileOpen); // Toggle mobile sidebar
+    } else {
+      toggleSidebar(!isCollapsed); // Toggle expand/collapse for tablet/PC
+    }
+  };
+
+  const handleClose = () => {
+    setIsMobileOpen(false); // Close sidebar on mobile
   };
 
   return (
-    <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
-      <button className="toggle-btn" onClick={handleToggle}>
-        {collapsed ? <FaChevronRight /> : <FaChevronLeft />}
-      </button>
+    <div className={`sidebar ${isCollapsed ? "collapsed" : "expanded"} ${isMobileOpen ? "mobile-active" : "mobile-hidden"}`}>
+      <div className="sidebar-header">
+        {window.innerWidth <= 768 ? (
+          <button className="close-button" onClick={handleClose}>
+            <FaTimes />
+          </button>
+        ) : (
+          <button className="toggle-button" onClick={handleToggle}>
+            {!isCollapsed ? <FaChevronLeft /> : <FaChevronRight />}
+          </button>
+        )}
+        <h2 className="sidebar-title">{!isCollapsed ? "AI4 Interviews" : "ITT"}</h2>
+      </div>
 
-      <h2 className="sidebar-title">{collapsed ? "ITT" : "AInterviewers"}</h2>
-
-      <ul>
-        <li className={location.pathname === "/" ? "active-btn" : ""}>
-          <Link to="/">
-            <FaHome className="icon" />
-            <span className={collapsed ? "hidden" : ""}>Home</span>
+      <ul className="sidebar-menu">
+        <li className={`menu-item ${location.pathname === "/" ? "active" : ""}`}>
+          <Link to="/" className="menu-link">
+            <FaHome className="menu-icon" />
+            <span className="menu-text">Home</span>
           </Link>
         </li>
-
-        <p className="section-title">Interview</p>
-        <li className={location.pathname === "/interview-practice" ? "active-btn" : ""}>
-          <Link to="/interview-practice">
-            <FaFileAlt className="icon" />
-            <span className={collapsed ? "hidden" : ""}>Interview Practice</span>
+        <p className="menu-category">Interview</p>
+        <li className={`menu-item ${location.pathname === "/interview-practice" ? "active" : ""}`}>
+          <Link to="/interview-practice" className="menu-link">
+            <FaFileAlt className="menu-icon" />
+            <span className="menu-text">Interview Practice</span>
           </Link>
         </li>
-        <li className={location.pathname === "/ai-interview-test" ? "active-btn" : ""}>
-          <Link to="/ai-interview-test">
-            <FaClipboardList className="icon" />
-            <span className={collapsed ? "hidden" : ""}>AI Interview Test</span>
+        <li className={`menu-item ${location.pathname === "/ai-interview-test" ? "active" : ""}`}>
+          <Link to="/ai-interview-test" className="menu-link">
+            <FaClipboardList className="menu-icon" />
+            <span className="menu-text">AI Interview Test</span>
+          </Link>
+        </li>
+        <li className={`menu-item ${location.pathname === "/live-interview" ? "active" : ""}`}>
+          <Link to="/live-interview" className="menu-link">
+            <FaUserTie className="menu-icon" />
+            <span className="menu-text">Live Interview</span>
+          </Link>
+        </li>
+        <li className={`menu-item ${location.pathname === "/results" ? "active" : ""}`}>
+          <Link to="/results" className="menu-link">
+            <FaChartBar className="menu-icon" />
+            <span className="menu-text">Results</span>
+          </Link>
+        </li>
+        <p className="menu-category">Tools</p>
+        <li className={`menu-item ${location.pathname === "/resume-builder" ? "active" : ""}`}>
+          <Link to="/resume-builder" className="menu-link">
+            <FaFileAlt className="menu-icon" />
+            <span className="menu-text">Resume Builder</span>
+          </Link>
+        </li>
+        <li className={`menu-item ${location.pathname === "/recruiter-chat" ? "active" : ""}`}>
+          <Link to="/recruiter-chat" className="menu-link">
+            <FaCommentDots className="menu-icon" />
+            <span className="menu-text">Recruiter Chat</span>
           </Link>
         </li>
         
-        <li className={location.pathname === "/live-interview" ? "active-btn" : ""}>
-          <Link to="/live-interview">
-            <FaUserTie className="icon" />
-            <span className={collapsed ? "hidden" : ""}>Live Interview</span>
+        <li className={`menu-item ${location.pathname === "/training-session" ? "active" : ""}`}>
+          <Link to="/training-session" className="menu-link">
+            <FaClipboardCheck className="menu-icon" />
+            <span className="menu-text">Training Session</span>
           </Link>
         </li>
-        <li className={location.pathname === "/results" ? "active-btn" : ""}>
-          <Link to="/results">
-            <FaChartBar className="icon" />
-            <span className={collapsed ? "hidden" : ""}>Results</span>
-          </Link>
-        </li>
-
-        <p className="section-title">Tools</p>
-        <li className={location.pathname === "/resume-builder" ? "active-btn" : ""}>
-          <Link to="/resume-builder">
-            <FaFileAlt className="icon" />
-            <span className={collapsed ? "hidden" : ""}>ATS Score</span>
-          </Link>
-        </li>
-        <li className={location.pathname === "/recruiter-chat" ? "active-btn" : ""}>
-          <Link to="/recruiter-chat">
-            <FaCommentDots className="icon" />
-            <span className={collapsed ? "hidden" : ""}>Recruiter Chat</span>
-          </Link>
-        </li>
-
-        <p className="section-title">Support</p>
-        <li className={location.pathname === "/interview-support" ? "active-btn" : ""}>
-          <Link to="/interview-support">
-            <FaUsers className="icon" />
-            <span className={collapsed ? "hidden" : ""}>Interview Support</span>
-          </Link>
-        </li>
-        <li className={location.pathname === "/training-session" ? "active-btn" : ""}>
-          <Link to="/training-session">
-            <FaClipboardList className="icon" />
-            <span className={collapsed ? "hidden" : ""}>Training Session</span>
-          </Link>
-        </li>
-        <li className={location.pathname === "/contact" ? "active-btn" : ""}>
-          <Link to="/contact">
-            <FaPhone className="icon" />
-            <span className={collapsed ? "hidden" : ""}>Contact Us</span>
+        <li className={`menu-item ${location.pathname === "/contact" ? "active" : ""}`}>
+          <Link to="/contact" className="menu-link">
+            <FaPhone className="menu-icon" />
+            <span className="menu-text">Contact Us</span>
           </Link>
         </li>
       </ul>
 
-      <div className="footer-logo">
-        <img 
-          src="https://i.postimg.cc/7Y0zKjDR/ITT-logo.jpg" 
-          alt="Intrain Tech Logo" 
-          className="opacity-30 w-32"
-        />
-      </div>
-
+      
     </div>
   );
 };

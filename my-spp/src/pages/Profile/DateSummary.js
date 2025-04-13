@@ -1,4 +1,3 @@
-// DateSummary.js
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import QuestionDetails from './QuestionDetails';
@@ -29,7 +28,7 @@ const DateSummary = ({ data }) => {
 
     return (
         <motion.div
-            className="mt-8 bg-white p-6 rounded-xl shadow-lg"
+            className="mt-8 bg-white p-4 md:p-6 rounded-xl shadow-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -38,18 +37,18 @@ const DateSummary = ({ data }) => {
                 <table className="w-full text-sm text-left text-gray-600 rounded-lg shadow-lg">
                     <thead className="bg-purple-400 text-white">
                         <tr>
-                            <th className="px-6 py-3">Date</th>
-                            <th className="px-6 py-3">Questions Attempted</th>
-                            <th className="px-6 py-3">Total Marks</th>
-                            <th className="px-6 py-3">Result</th>
-                            <th className="px-6 py-3">Actions</th>
+                            <th className="px-3 py-2 md:px-6 md:py-3">Date</th>
+                            <th className="px-3 py-2 md:px-6 md:py-3">Questions</th>
+                            <th className="px-3 py-2 md:px-6 md:py-3">Marks</th>
+                            <th className="px-3 py-2 md:px-6 md:py-3">Result</th>
+                            <th className="px-3 py-2 md:px-6 md:py-3">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {Object.keys(groupedData).map((date) => {
                             const questions = groupedData[date];
                             const totalMarks = questions.reduce((sum, q) => sum + q.marks, 0);
-                            const maxMarks = questions.length * 10; // Maximum possible marks (10 per question)
+                            const maxMarks = questions.length * 10;
                             const result = getResult(totalMarks, questions.length);
 
                             return (
@@ -57,13 +56,13 @@ const DateSummary = ({ data }) => {
                                     key={date}
                                     className="border-b border-gray-200 hover:bg-gray-100"
                                 >
-                                    <td className="px-6 py-4">{date}</td>
-                                    <td className="px-6 py-4">{questions.length}</td>
-                                    <td className="px-6 py-4">{`${totalMarks}/${maxMarks}`}</td>
-                                    <td className="px-6 py-4">{result}</td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-3 py-2 md:px-6 md:py-4">{date}</td>
+                                    <td className="px-3 py-2 md:px-6 md:py-4">{questions.length}</td>
+                                    <td className="px-3 py-2 md:px-6 md:py-4">{`${totalMarks}/${maxMarks}`}</td>
+                                    <td className="px-3 py-2 md:px-6 md:py-4">{result}</td>
+                                    <td className="px-3 py-2 md:px-6 md:py-4">
                                         <motion.button
-                                            className="bg-blue-400 text-white px-4 py-1.5 rounded-md"
+                                            className="bg-blue-400 text-white px-2 py-1 md:px-4 md:py-1.5 rounded-md text-sm md:text-base"
                                             whileHover={{ scale: 1.1, opacity: 0.9 }}
                                             onClick={() => handleViewClick(date)}
                                         >

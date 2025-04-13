@@ -12,7 +12,6 @@ const DataFetcher = () => {
             const id = JSON.parse(localStorage.getItem('user')).id;
             try {
                 const response = await makeAuthenticatedRequest(`/api/question-answers/get-sorted/${id}`);
-                console.log('Fetched data:', response);
                 setData(response);
             } catch (err) {
                 setError(err.message);
@@ -26,16 +25,14 @@ const DataFetcher = () => {
 
     if (loading)
         return (
-            <div className="flex flex-col items-center justify-center gap-y-4 min-h-screen bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
-                <p className="text-xl font-semibold text-white">
-                    Loading leaderboard...
-                </p>
+            <div className="flex flex-col items-center justify-center gap-y-4 min-h-[50vh] bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-white"></div>
+                <p className="text-lg font-semibold text-white">Loading leaderboard...</p>
             </div>
         );
     if (error)
         return (
-            <div className="text-center text-white font-semibold min-h-screen bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300">
+            <div className="text-center text-white font-semibold min-h-[50vh] bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300">
                 <p>Error: {error}</p>
             </div>
         );

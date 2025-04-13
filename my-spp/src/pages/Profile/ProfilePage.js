@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { FaUserCircle } from "react-icons/fa";
 import { makeAuthenticatedRequest } from "../../services/auth.service";
 import DataFetcher from "./DataFetcher";
-import '../../styles/ProfilePage.css'
+import '../../styles/ProfilePage.css';
 
 const ProfilePage = ({ isSidebarCollapsed }) => {
     const [loading, setLoading] = useState(true);
@@ -46,8 +46,10 @@ const ProfilePage = ({ isSidebarCollapsed }) => {
         >
             {loading ? (
                 <div className="loading-container">
-                    <div className="loading-spinner"></div>
-                    <p>Loading profile...</p>
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
+                    <p className="text-xl font-semibold text-white mt-4">
+                        Loading profile...
+                    </p>
                 </div>
             ) : (
                 <div className="profile-content">
@@ -56,20 +58,33 @@ const ProfilePage = ({ isSidebarCollapsed }) => {
                             <div className="profile-info">
                                 <FaUserCircle className="profile-icon" />
                                 <div>
-                                    <h2>{profile?.name}</h2>
-                                    <h3>{profile?.username}</h3>
+                                    <h2 className="text-2xl font-bold text-gray-800">{profile?.name}</h2>
+                                    <h3 className="text-lg text-gray-600">{profile?.username}</h3>
                                 </div>
                             </div>
                             <div className="profile-actions">
-                                <motion.button className="btn change-password">Change Password</motion.button>
-                                <motion.button className="btn change-email">Change Email</motion.button>
+                                <motion.button 
+                                    className="btn change-password"
+                                    whileHover={{ scale: 1.05 }}
+                                >
+                                    Change Password
+                                </motion.button>
+                                <motion.button 
+                                    className="btn change-email"
+                                    whileHover={{ scale: 1.05 }}
+                                >
+                                    Change Email
+                                </motion.button>
                             </div>
                         </div>
                         <div className="profile-details">
-                            <h3>Total Marks Obtained: <span>{`${profile?.totalMarks}/${totalPossibleMarks}`}</span></h3>
+                            <h3 className="text-xl font-semibold">
+                                Total Marks Obtained: 
+                                <span className="ml-2 text-blue-500">{`${profile?.totalMarks}/${totalPossibleMarks}`}</span>
+                            </h3>
                         </div>
                         <div className="test-summary">
-                            <h2>Test Summary</h2>
+                            <h2 className="text-2xl font-bold mb-4 text-gray-800">Test Summary</h2>
                             <DataFetcher />
                         </div>
                     </motion.div>
