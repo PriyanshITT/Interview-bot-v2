@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
@@ -24,41 +24,99 @@ import ProfilePage from "./pages/Profile/ProfilePage";
 import AuthPage from "./components/AuthPage.js";
 import "./styles/App.css";
 
-const App = () => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    // Initialize sidebar state: collapsed for PC/tablet (>768px), collapsed for mobile
-    return window.innerWidth > 768;
-  });
+// Wrapper component to track route and handle install prompt
+const AppWrapper = () => {
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [promptShown, setPromptShown] = useState(false);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+  const location = useLocation();
+
+  // Capture install prompt when available
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallButton(true); // Show notification when prompt is available
+    };
+
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === "accepted") {
+          console.log("✅ App installed by user");
+        } else {
+          console.log("❌ App install dismissed by user");
+        }
+        setDeferredPrompt(null);
+        setPromptShown(true);
+        setShowInstallButton(false); // Hide notification after prompt
+      });
+    }
+  };
+
+  // Show notification on visiting login page (once)
+  useEffect(() => {
+    if (location.pathname === "/login" && deferredPrompt && !promptShown) {
+      setShowInstallButton(true);
+    } else {
+      setShowInstallButton(false); // Hide on other routes
+    }
+  }, [location, deferredPrompt, promptShown]);
+
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => window.innerWidth > 768);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // Handle resize and maintain sidebar state
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
-        setIsSidebarCollapsed(true); // Always collapsed on mobile
-        setIsMobileOpen(false); // Close mobile menu
+        setIsSidebarCollapsed(true);
+        setIsMobileOpen(false);
       } else {
-        setIsSidebarCollapsed(true); // Collapsed by default on PC/tablet after login
+        setIsSidebarCollapsed(true);
       }
     };
 
-    handleResize(); // Set initial state
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const toggleMobileSidebar = () => {
-    setIsMobileOpen(!isMobileOpen);
-  };
-
-  const toggleSidebar = (collapsed) => {
-    setIsSidebarCollapsed(collapsed);
-  };
+  const toggleMobileSidebar = () => setIsMobileOpen(!isMobileOpen);
+  const toggleSidebar = (collapsed) => setIsSidebarCollapsed(collapsed);
 
   return (
-    <Router>
+    <div>
       <Routes>
-        <Route path="/login" element={<AuthPage />} />
+        <Route
+          path="/login"
+          element={
+            <>
+              {showInstallButton && !promptShown && (
+  <div className="install-notification">
+    <p>Enjoy a better experience!</p>
+    <button onClick={handleInstallClick} className="install-button">
+      Install App
+    </button>
+    <button
+      onClick={() => {
+        setShowInstallButton(false);
+        setPromptShown(true);
+      }}
+      className="close-button"
+    >
+      ✕
+    </button>
+  </div>
+)}
+              <AuthPage />
+            </>
+          }
+        />
         <Route
           path="/*"
           element={
@@ -99,8 +157,15 @@ const App = () => {
         />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
-    </Router>
+    </div>
   );
 };
 
-export default App;
+// Wrap App with Router and logic
+const RootApp = () => (
+  <Router>
+    <AppWrapper />
+  </Router>
+);
+
+export default RootApp;
